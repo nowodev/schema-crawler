@@ -57,7 +57,7 @@ class DetailCrawler implements ShouldQueue
 
         $data = $this->mergeOptions($adapter->validateAndGetData());
 
-        $schema = $this->findSchema();
+        $schema = $this->findSchema($data);
 
         if ($schema == null) {
             $this->schemaClass::createFromCrawlerData($data);
