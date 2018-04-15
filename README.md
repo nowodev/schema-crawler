@@ -1,4 +1,4 @@
-# A Chrome Headless wrapper for Laravel
+# Laravel Schema Crawler
 [![Build Status](https://img.shields.io/travis/helloiamlukas/schema-crawler/master.svg?style=flat-square)](https://travis-ci.org/helloiamlukas/chrome-php)
 
 A Laravel framework extension to crawl unstructured data from websites.
