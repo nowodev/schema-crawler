@@ -2,7 +2,7 @@
 
 namespace SchemaCrawler\Adapters;
 
-use SchemaCrawler\RawData;
+use SchemaCrawler\Containers\RawData;
 use Illuminate\Validation\ValidationException;
 
 abstract class Adapter
