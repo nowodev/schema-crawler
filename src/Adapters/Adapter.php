@@ -17,13 +17,13 @@ abstract class Adapter
      * Adapter constructor.
      * @param RawData $rawData
      * @param array   $options
-     * @param \Config $config
+     * @param array   $allowedAttributes
      */
-    public function __construct(RawData $rawData, array $options, \Config $config)
+    public function __construct(RawData $rawData, array $options, array $allowedAttributes)
     {
         $this->rawData = $rawData;
         $this->options = $options;
-        $this->allowedAttributes = $config->get('schema-crawler.attributes_to_crawl');
+        $this->allowedAttributes = $allowedAttributes;
     }
 
     /**

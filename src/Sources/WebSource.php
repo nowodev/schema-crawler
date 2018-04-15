@@ -21,13 +21,12 @@ abstract class WebSource
     /**
      * WebSource constructor.
      *
-     * @param \Config $config
      */
-    public function __construct(\Config $config)
+    public function __construct()
     {
-        $this->adapter = $config->get('schema-crawler.default_adapter');
-        $this->schemaModel = $config->get('schema-crawler.schema_model');
-        $this->allowedAttributes = array_keys($config->get('schema-crawler.attributes_to_crawl'));
+        $this->adapter = config('schema-crawler.default_adapter');
+        $this->schemaModel = config('schema-crawler.schema_model');
+        $this->allowedAttributes = array_keys(config('schema-crawler.attributes_to_crawl'));
     }
 
     /**
@@ -73,12 +72,12 @@ abstract class WebSource
     public function __call($name, $arguments)
     {
         $attribute = camel_case(str_replace('get', '', $name));
-        if (! in_array($attribute, $this->allowedAttributes)) {
+        if (!in_array($attribute, $this->allowedAttributes)) {
             return false;
         }
 
         $detailPage = $arguments[0];
-        if (! $detailPage instanceof Crawler) {
+        if (!$detailPage instanceof Crawler) {
             return false;
         }
 

@@ -76,7 +76,7 @@ class DetailCrawler implements ShouldQueue
         $data = new RawData($this->url);
 
         foreach ($this->cssSelectors as $attribute => $cssSelector) {
-            $data->{$attribute} = $this->source->{camel_case('get_'.$attribute)}($this->websiteDOM);
+            $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($this->websiteDOM);
         }
 
         return $data;
@@ -86,7 +86,7 @@ class DetailCrawler implements ShouldQueue
     {
         $adapterClass = $this->source->getAdapterClass();
 
-        return new $adapterClass($data, $this->source->getAdapterOptions());
+        return new $adapterClass($data, $this->source->getAdapterOptions(), config('schema-crawler.attributes_to_crawl'));
     }
 
     private function findSchema($data)

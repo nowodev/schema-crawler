@@ -18,7 +18,7 @@ return [
     | Define which model should be handled as the web source.
     |
     */
-    'source_model'        => App\ExampleSource::class,
+    'source_model'        => \App\ExampleSource::class,
     /*
     |--------------------------------------------------------------------------
     | Default Adapter
@@ -27,7 +27,7 @@ return [
     | Define which adapter should be used by default.
     |
     */
-    'default_adapter'     => App\Crawler\Adapters\ExampleAdapter::class,
+    'default_adapter'     => \App\Crawler\Adapters\ExampleAdapter::class,
     /*
     |--------------------------------------------------------------------------
     | Attributes

@@ -10,9 +10,9 @@ class SchemaCrawler
 {
     protected $sources = null;
 
-    public function __construct(\Config $config)
+    public function __construct()
     {
-        $sourceClass = $config->get('schema-crawler.source_model');
+        $sourceClass = config('schema-crawler.source_model');
         $this->sources = $sourceClass::shouldBeCrawled()->get();
     }
 
