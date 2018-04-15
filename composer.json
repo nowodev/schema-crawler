@@ -5,8 +5,8 @@
     "keywords":
     [
         "laravel",
-        "schema.org",
-        "unstructured data",
+        "schema-org",
+        "unstructured-data",
         "crawler"
     ],
     "license": "MIT",
