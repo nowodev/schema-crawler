@@ -4,6 +4,8 @@
 namespace SchemaCrawler;
 
 
+use SchemaCrawler\Jobs\UrlCrawler;
+
 class SchemaCrawler
 {
     protected $sources = null;
@@ -22,8 +24,8 @@ class SchemaCrawler
     protected function dispatchCrawlers()
     {
         foreach ($this->sources as $source) {
-            $crawler = $source->getCrawlerClassName();
-            dispatch(new $crawler());
+            $sourceCrawler = $source->getCrawlerClassName();
+            dispatch(new UrlCrawler(new $sourceCrawler()));
         }
     }
 }
