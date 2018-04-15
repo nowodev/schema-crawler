@@ -1,0 +1,44 @@
+{
+    "name": "helloiamlukas/schema-crawler",
+    "description": "A Laravel framework extension to crawl data from websites.",
+    "homepage": "https://github.com/helloiamlukas/schema-crawler",
+    "keywords":
+    [
+        "laravel",
+        "schema.org",
+        "unstructured data",
+        "crawler"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.1",
+        "helloiamlukas/laravel-chrome": "^1.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^3.6",
+        "phpunit/phpunit": "^6.1|^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SchemaCrawler\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SchemaCrawler\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SchemaCrawler\\SchemaCrawlerServiceProvider"
+            ]
+        }
+    }
+}
