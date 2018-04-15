@@ -1,8 +1,7 @@
 # A Chrome Headless wrapper for Laravel
-[![Build Status](https://img.shields.io/travis/helloiamlukas/laravel-chrome/master.svg?style=flat-square)](https://travis-ci.org/helloiamlukas/chrome-php)
-[![StyleCI](https://styleci.io/repos/128403303/shield?branch=master)](https://styleci.io/repos/19386515)
+[![Build Status](https://img.shields.io/travis/helloiamlukas/schema-crawler/master.svg?style=flat-square)](https://travis-ci.org/helloiamlukas/chrome-php)
 
-Get the DOM of any webpage by using headless Chrome.
+A Laravel framework extension to crawl unstructured data from websites.
 
 # Requirements
 This package requires a stable version of Google Chrome (v63 or higher).
