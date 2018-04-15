@@ -55,9 +55,9 @@ class DetailCrawler implements ShouldQueue
 
         $adapter = $this->createAdapterFromData($this->getDataFromWebsite());
 
-        $data = $adapter->validateAndGetData();
+        $data = $this->mergeOptions($adapter->validateAndGetData());
 
-        $schema = $this->findSchema($data);
+        $schema = $this->findSchema();
 
         if ($schema == null) {
             $this->schemaClass::createFromCrawlerData($data);
@@ -98,5 +98,14 @@ class DetailCrawler implements ShouldQueue
         }
 
         return $query->first();
+    }
+
+    private function mergeOptions($data)
+    {
+        foreach ($this->options as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        return $data;
     }
 }
