@@ -24,6 +24,7 @@ abstract class Adapter
         $this->rawData = $rawData;
         $this->options = $options;
         $this->allowedAttributes = $allowedAttributes;
+        $this->addBailToValidationRules();
     }
 
     /**
@@ -80,5 +81,12 @@ abstract class Adapter
         $data['sourceId'] = $this->rawData->getSourceId();
 
         return $data;
+    }
+
+    private function addBailToValidationRules()
+    {
+        $this->allowedAttributes = array_map(function ($attribute, $validation) {
+            return [$attribute => 'bail|' . $validation];
+        }, array_keys($this->allowedAttributes), $this->allowedAttributes);
     }
 }
