@@ -85,8 +85,8 @@ abstract class Adapter
 
     private function addBailToValidationRules()
     {
-        $this->allowedAttributes = array_map(function ($attribute, $validation) {
-            return [$attribute => 'bail|' . $validation];
-        }, array_keys($this->allowedAttributes), $this->allowedAttributes);
+        foreach ($this->allowedAttributes as $attribute => $validation) {
+            $this->allowedAttributes[$attribute] = 'bail|' . $validation;
+        }
     }
 }
