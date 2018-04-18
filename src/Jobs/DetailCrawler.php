@@ -28,6 +28,13 @@ class DetailCrawler implements ShouldQueue
     protected $schemaClass = null;
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 2;
+
+    /**
      * Create a new job instance.
      *
      * @param string    $url

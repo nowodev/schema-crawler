@@ -28,6 +28,13 @@ class UrlCrawler implements ShouldQueue
     protected $websiteOptions = null;
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
+    /**
      * Create a new job instance.
      *
      * @param WebSource $source
@@ -86,7 +93,7 @@ class UrlCrawler implements ShouldQueue
 
             $this->getUrlsFromCurrentWebsite();
 
-            if (! $this->pagingEnabled()) {
+            if (!$this->pagingEnabled()) {
                 continue;
             }
 
@@ -105,7 +112,7 @@ class UrlCrawler implements ShouldQueue
 
     private function pagingEnabled()
     {
-        return array_has($this->cssSelectors, 'nextPageLink') AND ! empty($this->cssSelectors['nextPageLink']);
+        return array_has($this->cssSelectors, 'nextPageLink') AND !empty($this->cssSelectors['nextPageLink']);
     }
 
     private function browseToWebsite(string $url)
@@ -122,7 +129,7 @@ class UrlCrawler implements ShouldQueue
             return $url;
         }
 
-        return $matches[0].trim('/', $url);
+        return $matches[0] . trim('/', $url);
     }
 
     private function getUrlsFromCurrentWebsite()
