@@ -73,7 +73,7 @@ class DetailCrawler implements ShouldQueue
 
     private function getDataFromWebsite()
     {
-        $data = new RawData($this->url);
+        $data = new RawData($this->url, $this->source->getId());
 
         foreach ($this->cssSelectors as $attribute => $cssSelector) {
             $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($this->websiteDOM);
