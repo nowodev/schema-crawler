@@ -6,6 +6,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 abstract class WebSource
 {
+    protected $id;
+
     protected $sourceUrls = [];
 
     protected $cssSelectors = [];
@@ -20,10 +22,11 @@ abstract class WebSource
 
     /**
      * WebSource constructor.
-     *
+     * @param $sourceId
      */
-    public function __construct()
+    public function __construct($sourceId)
     {
+        $this->id = $sourceId;
         $this->adapter = config('schema-crawler.default_adapter');
         $this->schemaModel = config('schema-crawler.schema_model');
         $this->allowedAttributes = array_keys(config('schema-crawler.attributes_to_crawl'));

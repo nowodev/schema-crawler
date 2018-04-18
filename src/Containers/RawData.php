@@ -5,15 +5,18 @@ namespace SchemaCrawler\Containers;
 class RawData
 {
     protected $url;
+    protected $sourceId;
 
     /**
      * RawData constructor.
      *
-     * @param $url
+     * @param string $url
+     * @param        $sourceId
      */
-    public function __construct($url)
+    public function __construct(string $url, $sourceId)
     {
         $this->url = $url;
+        $this->sourceId = $sourceId;
     }
 
     /**
@@ -22,5 +25,13 @@ class RawData
     public function getUrl()
     {
         return $this->url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSourceId()
+    {
+        return $this->sourceId;
     }
 }

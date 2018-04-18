@@ -77,6 +77,7 @@ abstract class Adapter
         }
 
         $data['url'] = $this->rawData->getUrl();
+        $data['sourceId'] = $this->rawData->getSourceId();
 
         return $data;
     }

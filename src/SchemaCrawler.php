@@ -25,7 +25,7 @@ class SchemaCrawler
     {
         foreach ($this->sources as $source) {
             $sourceCrawler = $source->getCrawlerClassName();
-            dispatch(new UrlCrawler(new $sourceCrawler()));
+            dispatch(new UrlCrawler(new $sourceCrawler($source->id)));
         }
     }
 }
