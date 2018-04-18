@@ -57,7 +57,7 @@ class DetailCrawler implements ShouldQueue
 
         $data = $this->mergeOptions($adapter->validateAndGetData());
 
-        $schema = $this->findSchema($data);
+        $schema = $this->findExistingSchema($data);
 
         if ($schema == null) {
             $this->schemaClass::createFromCrawlerData($data);
@@ -89,7 +89,7 @@ class DetailCrawler implements ShouldQueue
         return new $adapterClass($data, $this->source->getAdapterOptions(), config('schema-crawler.attributes_to_crawl'));
     }
 
-    private function findSchema($data)
+    private function findExistingSchema($data)
     {
         $query = $this->schemaClass::query();
 
