@@ -9,7 +9,7 @@ return [
     | Define which model should be handled as the default schema.
     |
     */
-    'schema_model'        => App\ExampleSchema::class,
+    'schema_model'        => \App\ExampleSchema::class,
     /*
     |--------------------------------------------------------------------------
     | Source Model
