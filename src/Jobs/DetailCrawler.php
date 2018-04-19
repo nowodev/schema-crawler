@@ -93,8 +93,7 @@ class DetailCrawler implements ShouldQueue
             'source_id'        => $this->source->getId(),
             'url'              => $this->url,
             'validation_error' => $exception instanceof ValidationException ? $exception->validator->errors()->first() : null,
-            'raw_data'         => $this->rawData,
-            'extracted_data'   => $this->extractedData,
+            'raw_data'         => json_encode($this->rawData),
             'exception'        => $exception->getTraceAsString()
         ]);
     }

@@ -19,7 +19,6 @@ class CreateFailedCrawlsTable extends Migration
             $table->string('url')->nullable();
             $table->string('validation_error')->nullable();
             $table->longText('raw_data')->nullable();
-            $table->longText('extracted_data')->nullable();
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
         });
