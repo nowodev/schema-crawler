@@ -34,9 +34,5 @@ class SchemaCrawlerServiceProvider extends ServiceProvider
         $this->commands([
             CrawlerStartCommand::class
         ]);
-
-        $this->app->extend('App\Exceptions\Handler', function ($handler) {
-            return new Handler($handler);
-        });
     }
 }
