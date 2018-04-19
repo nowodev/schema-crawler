@@ -84,7 +84,7 @@ class DetailCrawler implements ShouldQueue
      */
     public function failed(\Exception $exception)
     {
-        DB::table('failed_crawls')->insert([
+        DB::table('invalid_schemas')->insert([
             'source_id'        => $this->source->getId(),
             'url'              => $this->url,
             'validation_error' => $exception instanceof InvalidSchema ? $exception->getFirstValidationError() : null,
