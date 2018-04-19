@@ -45,7 +45,7 @@ class InvalidSchema extends \Exception
     /**
      * @return RawData
      */
-    public function getRawData(): RawData
+    public function getRawData()
     {
         return $this->rawData;
     }
@@ -53,7 +53,7 @@ class InvalidSchema extends \Exception
     /**
      * @return array
      */
-    public function getExtractedData(): array
+    public function getExtractedData()
     {
         return $this->extractedData;
     }
