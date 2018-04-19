@@ -40,7 +40,8 @@ class RawData
 
     public function validate()
     {
-        $validator = Validator::make((array) $this, config('schema-crawler.raw_validation'));
+        $config = config('schema-crawler.raw_validation');
+        $validator = Validator::make(array_intersect_key((array) $this, $config), $config);
 
         if ($validator->fails()) {
             throw new InvalidSchema($validator, $this);
