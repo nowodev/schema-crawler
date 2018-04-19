@@ -19,6 +19,8 @@ class SchemaCrawlerServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../resources/Crawler' => app_path('Crawler'),
         ]);
+
+        $this->loadMigrationsFrom(__DIR__ . '/../resources/database/migrations');
     }
 
     /**

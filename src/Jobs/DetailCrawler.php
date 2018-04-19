@@ -2,6 +2,8 @@
 
 namespace SchemaCrawler\Jobs;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Sources\WebSource;
 use ChromeHeadless\ChromeHeadless;
@@ -26,6 +28,10 @@ class DetailCrawler implements ShouldQueue
     protected $websiteDOM = null;
 
     protected $schemaClass = null;
+
+    protected $rawData = null;
+
+    protected $extractedData = null;
 
     /**
      * The number of times the job may be attempted.
@@ -60,17 +66,38 @@ class DetailCrawler implements ShouldQueue
     {
         $this->browseToWebsite();
 
-        $adapter = $this->createAdapterFromData($this->getDataFromWebsite());
+        $this->rawData = $this->getDataFromWebsite();
 
-        $data = $this->mergeOptions($adapter->validateAndGetData());
+        $adapter = $this->createAdapterFromData($this->rawData);
 
-        $schema = $this->findExistingSchema($data);
+        $this->extractedData = $this->mergeOptions($adapter->validateAndGetData());
+
+        $schema = $this->findExistingSchema($this->extractedData);
 
         if ($schema == null) {
-            $this->schemaClass::createFromCrawlerData($data);
+            $this->schemaClass::createFromCrawlerData($this->extractedData);
         } else {
-            $schema->updateFromCrawlerData($data);
+            $schema->updateFromCrawlerData($this->extractedData);
         }
+    }
+
+    /**
+     * The job failed to process.
+     *
+     * @param \Exception $exception
+     * @return void
+     */
+    public function failed(\Exception $exception)
+    {
+        DB::table('failed_crawls')->insert([
+            'source_id'        => $this->source->getId(),
+            'url'              => $this->url,
+            'validation_error' => $exception instanceof ValidationException ? $exception->errors() : null,
+            'raw_data'         => $this->rawData,
+            'extracted_data'   => $this->extractedData,
+            'exception'        => $exception->getTraceAsString(),
+            'job_id'           => $this->job->getJobId()
+        ]);
     }
 
     private function browseToWebsite()
