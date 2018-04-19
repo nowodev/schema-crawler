@@ -92,7 +92,7 @@ class DetailCrawler implements ShouldQueue
         DB::table('failed_crawls')->insert([
             'source_id'        => $this->source->getId(),
             'url'              => $this->url,
-            'validation_error' => $exception instanceof ValidationException ? $exception->errors() : null,
+            'validation_error' => $exception instanceof ValidationException ? $exception->validator->errors()->first() : null,
             'raw_data'         => $this->rawData,
             'extracted_data'   => $this->extractedData,
             'exception'        => $exception->getTraceAsString()
