@@ -2,6 +2,9 @@
 
 namespace SchemaCrawler\Containers;
 
+use Illuminate\Support\Facades\Validator;
+use SchemaCrawler\Exceptions\InvalidSchema;
+
 class RawData
 {
     protected $url;
@@ -33,5 +36,16 @@ class RawData
     public function getSourceId()
     {
         return $this->sourceId;
+    }
+
+    public function validate()
+    {
+        $validator = Validator::make((array) $this, config('sschema-crawler.raw_validation'));
+
+        if ($validator->fails()) {
+            throw new InvalidSchema($validator, $this);
+        }
+
+        return $this;
     }
 }

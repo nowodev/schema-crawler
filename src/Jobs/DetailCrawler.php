@@ -64,7 +64,9 @@ class DetailCrawler implements ShouldQueue
     {
         $this->browseToWebsite();
 
-        $adapter = $this->createAdapterFromData($this->getDataFromWebsite());
+        $rawData = $this->getDataFromWebsite()->validate();
+
+        $adapter = $this->createAdapterFromData($rawData);
 
         $data = $this->mergeOptions($adapter->validateAndGetData());
 

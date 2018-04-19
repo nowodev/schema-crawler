@@ -24,7 +24,7 @@ class InvalidSchema extends \Exception
      * @param                                             $rawData
      * @param                                             $extractedData
      */
-    public function __construct($validator, RawData $rawData, array $extractedData)
+    public function __construct($validator, RawData $rawData, array $extractedData = null)
     {
         parent::__construct($validator->errors()->first());
         $this->validator = $validator;

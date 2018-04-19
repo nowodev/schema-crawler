@@ -43,5 +43,19 @@ return [
         'name' => 'required',
         'price' => 'required|numeric'
         */
+    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Raw Data Validation
+    |--------------------------------------------------------------------------
+    |
+    | Define the validation of the raw crawled data, before it will be
+    | manipulated by the adapter.
+    |
+    */
+    'raw_validation'      => [
+        /*
+         'name' => 'min:10'
+        */
     ]
 ];
