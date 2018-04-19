@@ -88,8 +88,8 @@ class DetailCrawler implements ShouldQueue
             'source_id'        => $this->source->getId(),
             'url'              => $this->url,
             'validation_error' => $exception instanceof InvalidSchema ? $exception->getFirstValidationError() : null,
-            'raw_data'         => $exception instanceof InvalidSchema ? $exception->getRawData() : null,
-            'extracted_data'   => $exception instanceof InvalidSchema ? $exception->getExtractedData() : null,
+            'raw_data'         => $exception instanceof InvalidSchema ? json_encode($exception->getRawData()) : null,
+            'extracted_data'   => $exception instanceof InvalidSchema ? json_encode($exception->getExtractedData()) : null,
             'exception'        => $exception->getTraceAsString()
         ]);
     }
