@@ -4,6 +4,7 @@ namespace SchemaCrawler;
 
 use Illuminate\Support\ServiceProvider;
 use SchemaCrawler\Commands\CrawlerStartCommand;
+use SchemaCrawler\Exceptions\Handler;
 
 class SchemaCrawlerServiceProvider extends ServiceProvider
 {
@@ -33,5 +34,9 @@ class SchemaCrawlerServiceProvider extends ServiceProvider
         $this->commands([
             CrawlerStartCommand::class
         ]);
+
+        $this->app->extend('App\Exceptions\Handler', function ($handler) {
+            return new Handler($handler);
+        });
     }
 }
