@@ -5,6 +5,7 @@ namespace SchemaCrawler\Jobs;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use SchemaCrawler\Containers\RawData;
+use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Sources\WebSource;
 use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
@@ -28,10 +29,6 @@ class DetailCrawler implements ShouldQueue
     protected $websiteDOM = null;
 
     protected $schemaClass = null;
-
-    protected $rawData = null;
-
-    protected $extractedData = null;
 
     /**
      * The number of times the job may be attempted.
@@ -66,18 +63,16 @@ class DetailCrawler implements ShouldQueue
     {
         $this->browseToWebsite();
 
-        $this->rawData = $this->getDataFromWebsite();
+        $adapter = $this->createAdapterFromData($this->getDataFromWebsite());
 
-        $adapter = $this->createAdapterFromData($this->rawData);
+        $data = $this->mergeOptions($adapter->validateAndGetData());
 
-        $this->extractedData = $this->mergeOptions($adapter->validateAndGetData());
-
-        $schema = $this->findExistingSchema($this->extractedData);
+        $schema = $this->findExistingSchema($data);
 
         if ($schema == null) {
-            $this->schemaClass::createFromCrawlerData($this->extractedData);
+            $this->schemaClass::createFromCrawlerData($data);
         } else {
-            $schema->updateFromCrawlerData($this->extractedData);
+            $schema->updateFromCrawlerData($data);
         }
     }
 
@@ -92,8 +87,9 @@ class DetailCrawler implements ShouldQueue
         DB::table('failed_crawls')->insert([
             'source_id'        => $this->source->getId(),
             'url'              => $this->url,
-            'validation_error' => $exception instanceof ValidationException ? $exception->validator->errors()->first() : null,
-            'raw_data'         => json_encode($this->rawData),
+            'validation_error' => $exception instanceof InvalidSchema ? $exception->getFirstValidationError() : null,
+            'raw_data'         => $exception instanceof InvalidSchema ? $exception->getRawData() : null,
+            'extracted_data'   => $exception instanceof InvalidSchema ? $exception->getExtractedData() : null,
             'exception'        => $exception->getTraceAsString()
         ]);
     }

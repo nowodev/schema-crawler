@@ -4,6 +4,7 @@ namespace SchemaCrawler\Adapters;
 
 use SchemaCrawler\Containers\RawData;
 use Illuminate\Validation\ValidationException;
+use SchemaCrawler\Exceptions\InvalidSchema;
 
 abstract class Adapter
 {
@@ -67,14 +68,14 @@ abstract class Adapter
 
     /**
      * @return array
-     * @throws ValidationException
+     * @throws InvalidSchema
      */
     public function validateAndGetData()
     {
         $data = $this->getAttributes();
         $validator = \Validator::make($data, $this->allowedAttributes);
         if ($validator->fails()) {
-            throw new ValidationException($validator);
+            throw new InvalidSchema($validator, $this->rawData, $data);
         }
 
         $data['url'] = $this->rawData->getUrl();

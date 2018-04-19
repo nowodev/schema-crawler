@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFailedCrawlsTable extends Migration
+class CreateInvalidSchemasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateFailedCrawlsTable extends Migration
      */
     public function up()
     {
-        Schema::create('failed_crawls', function (Blueprint $table) {
+        Schema::create('invalid_schemas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('source_id');
             $table->string('url')->nullable();
             $table->string('validation_error')->nullable();
             $table->json('raw_data')->nullable();
+            $table->json('extracted_data')->nullable();
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
         });
@@ -31,6 +32,6 @@ class CreateFailedCrawlsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('failed_crawls');
+        Schema::dropIfExists('invalid_schemas');
     }
 }
