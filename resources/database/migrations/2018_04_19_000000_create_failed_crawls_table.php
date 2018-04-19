@@ -21,7 +21,6 @@ class CreateFailedCrawlsTable extends Migration
             $table->longText('raw_data')->nullable();
             $table->longText('extracted_data')->nullable();
             $table->longText('exception');
-            $table->bigInteger('job_id');
             $table->timestamp('failed_at')->useCurrent();
         });
     }

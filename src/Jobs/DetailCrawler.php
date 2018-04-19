@@ -17,8 +17,6 @@ class DetailCrawler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $jobId = null;
-
     protected $url = null;
 
     protected $options = [];
@@ -52,7 +50,6 @@ class DetailCrawler implements ShouldQueue
      */
     public function __construct(string $url, array $options, WebSource $source)
     {
-        $this->jobId = $this->job->getJobId();
         $this->url = $url;
         $this->options = $options;
         $this->source = $source;
@@ -98,8 +95,7 @@ class DetailCrawler implements ShouldQueue
             'validation_error' => $exception instanceof ValidationException ? $exception->errors() : null,
             'raw_data'         => $this->rawData,
             'extracted_data'   => $this->extractedData,
-            'exception'        => $exception->getTraceAsString(),
-            'job_id'           => $this->jobId
+            'exception'        => $exception->getTraceAsString()
         ]);
     }
 
