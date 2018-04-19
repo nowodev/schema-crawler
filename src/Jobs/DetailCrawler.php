@@ -93,8 +93,8 @@ class DetailCrawler implements ShouldQueue
             ], [
                 'source_id'        => $this->source->getId(),
                 'validation_error' => $exception->getFirstValidationError(),
-                'raw_data'         => json_encode($exception->getRawData()),
-                'extracted_data'   => json_encode($exception->getExtractedData()),
+                'raw_data'         => $exception->getRawData() ?: json_encode($exception->getRawData()),
+                'extracted_data'   => $exception->getExtractedData() ?: json_encode($exception->getExtractedData()),
                 'failed_at'        => Carbon::now()
             ]);
         }
