@@ -2,6 +2,7 @@
 
 namespace SchemaCrawler\Jobs;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use SchemaCrawler\Containers\RawData;
@@ -84,14 +85,17 @@ class DetailCrawler implements ShouldQueue
      */
     public function failed(\Exception $exception)
     {
-        DB::table('invalid_schemas')->insert([
-            'source_id'        => $this->source->getId(),
-            'url'              => $this->url,
-            'validation_error' => $exception instanceof InvalidSchema ? $exception->getFirstValidationError() : null,
-            'raw_data'         => $exception instanceof InvalidSchema ? json_encode($exception->getRawData()) : null,
-            'extracted_data'   => $exception instanceof InvalidSchema ? json_encode($exception->getExtractedData()) : null,
-            'exception'        => $exception->getTraceAsString()
-        ]);
+        if ($exception instanceof InvalidSchema) {
+            DB::table('invalid_schemas')->updateOrInsert([
+                'url' => $this->url,
+            ], [
+                'source_id'        => $this->source->getId(),
+                'validation_error' => $exception->getFirstValidationError(),
+                'raw_data'         => json_encode($exception->getRawData()),
+                'extracted_data'   => json_encode($exception->getExtractedData()),
+                'failed_at'        => Carbon::now()
+            ]);
+        }
     }
 
     private function browseToWebsite()

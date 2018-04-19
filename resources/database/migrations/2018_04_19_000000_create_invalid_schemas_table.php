@@ -16,11 +16,10 @@ class CreateInvalidSchemasTable extends Migration
         Schema::create('invalid_schemas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('source_id');
-            $table->string('url')->nullable();
+            $table->string('url')->unique();
             $table->string('validation_error')->nullable();
             $table->json('raw_data')->nullable();
             $table->json('extracted_data')->nullable();
-            $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
         });
     }
