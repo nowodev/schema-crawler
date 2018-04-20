@@ -2,22 +2,22 @@
 
 namespace SchemaCrawler\Models;
 
-interface Schema
+trait Schema
 {
     /**
      * @return array
      */
-    public static function getUniqueKeys(): array;
+    abstract public static function getUniqueKeys(): array;
 
     /**
      * @param array $data
      * @return mixed
      */
-    public static function createFromCrawlerData(array $data);
+    abstract public static function createFromCrawlerData(array $data);
 
     /**
      * @param array $data
      * @return mixed
      */
-    public function updateFromCrawlerData(array $data);
+    abstract public function updateFromCrawlerData(array $data);
 }
