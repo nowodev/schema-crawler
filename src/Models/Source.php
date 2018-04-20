@@ -18,4 +18,10 @@ interface Source
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeShouldBeCrawled(Builder $query): Builder;
+
+    /**
+     * @param array $urls
+     * @return mixed
+     */
+    public static function urlsCrawledEvent(array $urls);
 }

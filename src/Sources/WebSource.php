@@ -18,6 +18,8 @@ abstract class WebSource
 
     protected $schemaModel = null;
 
+    protected $sourceModel = null;
+
     protected $allowedAttributes = [];
 
     /**
@@ -29,6 +31,7 @@ abstract class WebSource
         $this->id = $sourceId;
         $this->adapter = config('schema-crawler.default_adapter');
         $this->schemaModel = config('schema-crawler.schema_model');
+        $this->sourceModel = config('schema-crawler.source_model');
         $this->allowedAttributes = array_keys(config('schema-crawler.attributes_to_crawl'));
     }
 
@@ -46,6 +49,14 @@ abstract class WebSource
     public function getSchemaModelClass(): string
     {
         return $this->schemaModel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceModelClass(): string
+    {
+        return $this->sourceModel;
     }
 
     /**
