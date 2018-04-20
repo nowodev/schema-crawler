@@ -62,7 +62,7 @@ class UrlCrawler implements ShouldQueue
         $this->mergeDuplicateUrls();
 
         $sourceModel = $this->source->getSourceModelClass();
-        $sourceModel::urlsCrawledEvent($this->urls);
+        $sourceModel::findOrFail($this->source->getId())->urlsCrawledEvent($this->urls);
 
         foreach ($this->urls as $detailPage) {
             dispatch(new DetailCrawler($detailPage['url'], $detailPage['options'], $this->source));

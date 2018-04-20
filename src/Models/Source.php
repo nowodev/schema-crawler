@@ -23,5 +23,5 @@ interface Source
      * @param array $urls
      * @return mixed
      */
-    public static function urlsCrawledEvent(array $urls);
+    public function urlsCrawledEvent(array $urls);
 }
