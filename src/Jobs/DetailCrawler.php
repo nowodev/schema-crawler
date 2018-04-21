@@ -4,7 +4,6 @@ namespace SchemaCrawler\Jobs;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Sources\WebSource;
@@ -19,16 +18,46 @@ class DetailCrawler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * The url that should be crawled.
+     *
+     * @var string
+     */
     protected $url = null;
 
+    /**
+     * Attributes that should be overwritten.
+     *
+     * @var array
+     */
     protected $options = [];
 
+    /**
+     * The crawler source instance.
+     *
+     * @var WebSource
+     */
     protected $source = null;
 
+    /**
+     * The CSS selectors for the attributes of the schema.
+     *
+     * @var array
+     */
     protected $cssSelectors = [];
 
+    /**
+     * The DOM of the crawled website.
+     *
+     * @var Crawler
+     */
     protected $websiteDOM = null;
 
+    /**
+     * The class name of the schema model.
+     *
+     * @var string
+     */
     protected $schemaClass = null;
 
     /**
@@ -59,6 +88,7 @@ class DetailCrawler implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws InvalidSchema
      */
     public function handle()
     {

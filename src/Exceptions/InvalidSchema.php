@@ -13,8 +13,18 @@ class InvalidSchema extends \Exception
      */
     public $validator;
 
+    /**
+     * The crawled data of the website.
+     *
+     * @var RawData
+     */
     protected $rawData;
 
+    /**
+     * The data that has been return by the adapter.
+     *
+     * @var array
+     */
     protected $extractedData;
 
     /**
@@ -43,6 +53,8 @@ class InvalidSchema extends \Exception
     }
 
     /**
+     * Get the crawled data of the website.
+     *
      * @return RawData
      */
     public function getRawData()
@@ -51,6 +63,8 @@ class InvalidSchema extends \Exception
     }
 
     /**
+     * Get the data that has been return by the adapter.
+     *
      * @return array
      */
     public function getExtractedData()

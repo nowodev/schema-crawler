@@ -15,17 +15,33 @@ class UrlCrawler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $source = null;
+    /**
+     * The crawler source instance.
+     *
+     * @var WebSource
+     */
+    protected $source;
 
-    protected $sourceUrls = [];
-
+    /**
+     * The CSS selectors for the paging.
+     *
+     * @var array
+     */
     protected $cssSelectors = [];
 
+    /**
+     * The urls that have been crawled from the paging overview.
+     *
+     * @var array
+     */
     protected $urls = [];
 
+    /**
+     * The DOM of the current website.
+     *
+     * @var Crawler
+     */
     protected $currentWebsite = null;
-
-    protected $websiteOptions = null;
 
     /**
      * The number of times the job may be attempted.
@@ -38,15 +54,10 @@ class UrlCrawler implements ShouldQueue
      * Create a new job instance.
      *
      * @param WebSource $source
-     * @internal param array $sources
-     * @internal param array $cssSelectors
-     * @internal param null|string $nextPageSelector
-     * @internal param array $cssSelectors
      */
     public function __construct(WebSource $source)
     {
         $this->source = $source;
-        $this->sourceUrls = $source->getSourceUrls();
         $this->cssSelectors = $source->getCssSelectors()['overview'];
     }
 
@@ -88,13 +99,11 @@ class UrlCrawler implements ShouldQueue
 
     private function getUrlsFromSources()
     {
-        foreach ($this->sourceUrls as $source) {
-
-            $this->websiteOptions = $source['options'];
+        foreach ($this->source->getSourceUrls() as $source) {
 
             $this->browseToWebsite($source['url']);
 
-            $this->getUrlsFromCurrentWebsite();
+            $this->getUrlsFromCurrentWebsite($source['options']);
 
             if (!$this->pagingEnabled()) {
                 continue;
@@ -135,10 +144,10 @@ class UrlCrawler implements ShouldQueue
         return $matches[0] . trim('/', $url);
     }
 
-    private function getUrlsFromCurrentWebsite()
+    private function getUrlsFromCurrentWebsite($options)
     {
-        $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) {
-            $this->addUrl($link->attr('href'), $this->websiteOptions);
+        $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options) {
+            $this->addUrl($link->attr('href'), $options);
         });
     }
 

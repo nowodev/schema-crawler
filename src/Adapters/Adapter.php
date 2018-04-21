@@ -8,14 +8,30 @@ use SchemaCrawler\Exceptions\InvalidSchema;
 
 abstract class Adapter
 {
-    protected $rawData = null;
+    /**
+     * The crawled data of the website.
+     *
+     * @var RawData
+     */
+    protected $rawData;
 
+    /**
+     * Specific options that can be handled in the adapter.
+     *
+     * @var array
+     */
     protected $options = [];
 
+    /**
+     * The name and specification of the attributes that should be crawled.
+     *
+     * @var array
+     */
     protected $allowedAttributes = [];
 
     /**
      * Adapter constructor.
+     *
      * @param RawData $rawData
      * @param array   $options
      * @param array   $allowedAttributes
@@ -29,6 +45,8 @@ abstract class Adapter
     }
 
     /**
+     * Dynamic getters for the attributes.
+     *
      * @param $name
      * @param $arguments
      * @return bool
@@ -37,6 +55,7 @@ abstract class Adapter
     {
         $attribute = camel_case(str_replace('get', '', $name));
         if (!in_array($attribute, array_keys($this->allowedAttributes))) {
+            // attributes doesn't exist
             return false;
         }
 
@@ -44,6 +63,8 @@ abstract class Adapter
     }
 
     /**
+     * Helper function to trim a string.
+     *
      * @param String $input
      * @return null|string|string[]
      */
@@ -53,6 +74,8 @@ abstract class Adapter
     }
 
     /**
+     * Return all attributes.
+     *
      * @return array
      */
     protected function getAttributes()
@@ -67,6 +90,8 @@ abstract class Adapter
     }
 
     /**
+     * Validate the attributes and return them.
+     *
      * @return array
      * @throws InvalidSchema
      */

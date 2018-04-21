@@ -34,7 +34,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | Define the name and specification of the attributes that should be
-    | crawled. Check the Laravel documentation for available validation rules:
+    | crawled. The attributes will be validated after they have been modified
+    | by the adapter.
+    |
+    | Check the Laravel documentation for all available validation rules:
     | https://laravel.com/docs/master/validation#available-validation-rules
     |
     */

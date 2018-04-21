@@ -7,14 +7,25 @@ use SchemaCrawler\Exceptions\InvalidSchema;
 
 class RawData
 {
+    /**
+     * The url of the origin of the data.
+     *
+     * @var string
+     */
     protected $url;
+
+    /**
+     * The database id of the source.
+     *
+     * @var
+     */
     protected $sourceId;
 
     /**
      * RawData constructor.
      *
-     * @param string $url
-     * @param        $sourceId
+     * @param string $url Origin of the data
+     * @param        $sourceId Database id of the source
      */
     public function __construct(string $url, $sourceId)
     {
@@ -23,6 +34,8 @@ class RawData
     }
 
     /**
+     * Get the url.
+     *
      * @return mixed
      */
     public function getUrl()
@@ -31,6 +44,8 @@ class RawData
     }
 
     /**
+     * Get the database id of the source.
+     *
      * @return mixed
      */
     public function getSourceId()
@@ -38,6 +53,12 @@ class RawData
         return $this->sourceId;
     }
 
+    /**
+     * Validate the data.
+     *
+     * @return $this
+     * @throws InvalidSchema
+     */
     public function validate()
     {
         $config = config('schema-crawler.raw_validation');

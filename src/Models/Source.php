@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 trait Source
 {
     /**
+     * Get the crawler class name of the source.
+     *
      * @return string
      */
     abstract public function getCrawlerClassName(): string;
@@ -23,6 +25,8 @@ trait Source
     }
 
     /**
+     * This function will be triggered after the urls of a source have been crawled.
+     *
      * @param array $urls
      * @return mixed
      */
