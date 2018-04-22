@@ -46,8 +46,7 @@ class AdapterMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-
-        return $rootNamespace . '\\' . Config::get('schema-crawler.generator.adapter.namespace');
+        return Config::get('schema-crawler.generator.adapter.namespace');
     }
 
     /**

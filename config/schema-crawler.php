@@ -72,11 +72,11 @@ return [
     'generator'           => [
         'websource' => [
             'parent_class' => \SchemaCrawler\Sources\WebSource::class,
-            'namespace'    => 'Crawler\Sources'
+            'namespace'    => '\App\Crawler\Sources'
         ],
         'adapter'   => [
             'parent_class' => \SchemaCrawler\Adapters\Adapter::class,
-            'namespace'    => 'Crawler\Adapters'
+            'namespace'    => '\App\Crawler\Adapters'
         ]
     ]
 ];
