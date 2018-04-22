@@ -1,0 +1,17 @@
+<?php
+
+namespace DummyNamespace;
+
+class DummyClass extends DummyParentAdapter
+{
+    /**
+     * Manipulate the dummyAttribute of the crawled product.
+     *
+     * @return string
+     */
+    public function getDummyAttribute()
+    {
+        // you can access the crawled data via the attached rawData attribute
+        // $name = $this->rawData->name;
+    }
+}

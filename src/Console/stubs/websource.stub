@@ -1,0 +1,39 @@
+<?php
+
+namespace DummyNamespace;
+
+class DummyClass extends DummyParentWebSource
+{
+    /**
+     * The urls of the pages that contain links to the schemas.
+     * Options for each url can be defined that will overwrite the attributes of the crawled schemas.
+     *
+     * @var array
+     */
+    protected $sourceUrls = [
+        [
+            'url'     => '',
+            'options' => [],
+        ]
+    ];
+
+    /**
+     * The CSS selectors of the paging and the attributes of the schema.
+     *
+     * @var array
+     */
+    protected $cssSelectors = [
+        'overview' => [
+            'detailPageLink' => '',
+            'nextPageLink'   => null,
+        ],
+        'detail'   => ['DummyAttributes'],
+    ];
+
+    /**
+     * Options defined here will be accessible in the adapter.
+     *
+     * @var array
+     */
+    protected $adapterOptions = [];
+}

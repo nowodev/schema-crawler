@@ -1,6 +1,6 @@
 <?php
 
-namespace SchemaCrawler\Commands;
+namespace SchemaCrawler\Console;
 
 use Illuminate\Console\Command;
 use SchemaCrawler\SchemaCrawler;
