@@ -13,7 +13,7 @@ class AdapterMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $name = 'make:adapter';
+    protected $name = 'make:adapter {name}';
     /**
      * The console command description.
      *
