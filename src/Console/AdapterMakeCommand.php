@@ -5,6 +5,7 @@ namespace SchemaCrawler\Console;
 
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Facades\Config;
 
 class AdapterMakeCommand extends GeneratorCommand
 {
@@ -45,7 +46,8 @@ class AdapterMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . config('schema-crawler.generator.adapter.namespace');
+
+        return $rootNamespace . Config::get('schema-crawler.generator.adapter.namespace');
     }
 
     /**
@@ -57,9 +59,9 @@ class AdapterMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $class = parent::buildClass($name);
-        $class = str_replace('DummyParentAdapter', config('schema-crawler.generator.adapter.parent_class'), $class);
+        $class = str_replace('DummyParentAdapter', Config::get('schema-crawler.generator.adapter.parent_class'), $class);
 
-        $attribute = camel_case(array_keys(config('schema-crawler.attributes_to_crawl'))[0]);
+        $attribute = camel_case(array_keys(Config::get('schema-crawler.attributes_to_crawl'))[0]);
         $class = str_replace('\'DummyAttribute\'', ucfirst($attribute));
         $class = str_replace('\'dummyAttribute\'', $attribute);
         return $class;

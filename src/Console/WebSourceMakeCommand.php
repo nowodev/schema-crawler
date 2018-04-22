@@ -5,6 +5,7 @@ namespace SchemaCrawler\Console;
 
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Facades\Config;
 
 class WebSourceMakeCommand extends GeneratorCommand
 {
@@ -45,7 +46,7 @@ class WebSourceMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . config('schema-crawler.generator.websource.namespace');
+        return $rootNamespace . Config::get('schema-crawler.generator.websource.namespace');
     }
 
     /**
@@ -57,11 +58,11 @@ class WebSourceMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $class = parent::buildClass($name);
-        $class = str_replace('DummyParentWebSource', config('schema-crawler.generator.websource.parent_class'), $class);
+        $class = str_replace('DummyParentWebSource', Config::get('schema-crawler.generator.websource.parent_class'), $class);
 
         $attributes = array_map(function ($e) {
             return "'$e' => '',";
-        }, array_keys(config('schema-crawler.attributes_to_crawl')));
+        }, array_keys(Config::get('schema-crawler.attributes_to_crawl')));
 
         $class = str_replace('\'DummyAttributes\'', implode("\n", $attributes));
         return $class;
