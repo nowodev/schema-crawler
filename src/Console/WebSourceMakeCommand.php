@@ -61,10 +61,10 @@ class WebSourceMakeCommand extends GeneratorCommand
         $class = str_replace('DummyParentWebSource', Config::get('schema-crawler.generator.websource.parent_class'), $class);
 
         $attributes = array_map(function ($e) {
-            return "'$e' => '',";
+            return "'$e' => ''";
         }, array_keys(Config::get('schema-crawler.attributes_to_crawl')));
 
-        $class = str_replace('\'DummyAttributes\'', implode("\n", $attributes), $class);
+        $class = str_replace('\'DummyAttributes\'', "\n\t\t\t" . implode(",\n\t\t\t", $attributes) . "\n\t\t", $class);
         return $class;
     }
 }
