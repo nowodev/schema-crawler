@@ -46,7 +46,7 @@ class WebSourceMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . Config::get('schema-crawler.generator.websource.namespace');
+        return $rootNamespace . '\\' . Config::get('schema-crawler.generator.websource.namespace');
     }
 
     /**

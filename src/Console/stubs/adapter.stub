@@ -12,6 +12,6 @@ class DummyClass extends DummyParentAdapter
     public function getDummyAttribute()
     {
         // you can access the crawled data via the attached rawData attribute
-        // $name = $this->rawData->name;
+        // $dummyAttribute = $this->rawData->dummyAttribute;
     }
 }
