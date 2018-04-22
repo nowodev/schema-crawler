@@ -59,7 +59,7 @@ class AdapterMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $class = parent::buildClass($name);
-        $class = str_replace('DummyParentAdapter', Config::get('schema-crawler.generator.adapter.parent_class'), $class);
+        $class = str_replace('DummyParentAdapter', '\\' . Config::get('schema-crawler.generator.adapter.parent_class'), $class);
 
         $attribute = camel_case(array_keys(Config::get('schema-crawler.attributes_to_crawl'))[0]);
         $class = str_replace('DummyAttribute', ucfirst($attribute), $class);

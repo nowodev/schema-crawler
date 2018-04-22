@@ -58,7 +58,7 @@ class WebSourceMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $class = parent::buildClass($name);
-        $class = str_replace('DummyParentWebSource', Config::get('schema-crawler.generator.websource.parent_class'), $class);
+        $class = str_replace('DummyParentWebSource', '\\' . Config::get('schema-crawler.generator.websource.parent_class'), $class);
 
         $attributes = array_map(function ($e) {
             return "'$e' => ''";
