@@ -90,7 +90,7 @@ class WebSourceMakeCommand extends GeneratorCommand
      */
     protected function createTest()
     {
-        $this->call('make:websource:test', [
+        $this->call('make:sourcetest', [
             'name' => $this->argument('name') . 'Test'
         ]);
     }

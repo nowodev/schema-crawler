@@ -13,7 +13,7 @@ class WebSourceTestMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $name = 'make:websource:test {name}';
+    protected $name = 'make:sourcetest {name}';
 
     /**
      * The console command description.
