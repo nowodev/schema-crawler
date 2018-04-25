@@ -5,6 +5,7 @@ namespace SchemaCrawler;
 use Illuminate\Support\ServiceProvider;
 use SchemaCrawler\Console\AdapterMakeCommand;
 use SchemaCrawler\Console\CrawlerStartCommand;
+use SchemaCrawler\Console\CrawlerTestCommand;
 use SchemaCrawler\Console\WebSourceMakeCommand;
 use SchemaCrawler\Console\WebSourceTestMakeCommand;
 use SchemaCrawler\Exceptions\Handler;
@@ -38,6 +39,7 @@ class SchemaCrawlerServiceProvider extends ServiceProvider
 
         $this->commands([
             CrawlerStartCommand::class,
+            CrawlerTestCommand::class,
             AdapterMakeCommand::class,
             WebSourceMakeCommand::class,
             WebSourceTestMakeCommand::class
