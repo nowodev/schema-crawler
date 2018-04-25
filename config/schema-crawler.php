@@ -72,7 +72,8 @@ return [
     'generator'           => [
         'websource' => [
             'parent_class' => \SchemaCrawler\Sources\WebSource::class,
-            'namespace'    => '\App\Crawler\Sources'
+            'namespace'    => '\App\Crawler\Sources',
+            'tests_namespace' => '\Tests\Feature\Crawler\Sources'
         ],
         'adapter'   => [
             'parent_class' => \SchemaCrawler\Adapters\Adapter::class,

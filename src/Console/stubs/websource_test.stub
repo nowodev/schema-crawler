@@ -1,0 +1,10 @@
+<?php
+
+namespace DummyNamespace;
+
+use SchemaCrawler\Testing\SourceTest;
+
+class DummyClass extends SourceTest
+{
+    use \Tests\CreatesApplication;
+}

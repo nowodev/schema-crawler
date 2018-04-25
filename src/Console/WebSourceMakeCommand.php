@@ -29,6 +29,20 @@ class WebSourceMakeCommand extends GeneratorCommand
     protected $type = 'WebSource';
 
     /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        parent::handle();
+
+        if (!$this->option('no-test')) {
+            $this->createTest();
+        }
+    }
+
+    /**
      * Get the stub file for the generator.
      *
      * @return string
@@ -66,5 +80,30 @@ class WebSourceMakeCommand extends GeneratorCommand
 
         $class = str_replace('\'DummyAttributes\'', "\n\t\t\t" . implode(",\n\t\t\t", $attributes) . "\n\t\t", $class);
         return $class;
+    }
+
+    /**
+     * Create a test class for the web source.
+     *
+     * @return void
+     */
+    protected function createTest()
+    {
+        $this->call('make:websource:test', [
+            'name' => $this->argument('name') . 'Test'
+        ]);
+    }
+
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['no-test', '-t', InputOption::VALUE_NONE, 'Do not create a test for the web source.'],
+        ];
     }
 }
