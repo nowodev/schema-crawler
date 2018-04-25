@@ -5,8 +5,8 @@ namespace SchemaCrawler;
 
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use SchemaCrawler\Jobs\UrlCrawler;
-use SchemaCrawler\Models\Source;
 
 class SchemaCrawler
 {
@@ -17,14 +17,20 @@ class SchemaCrawler
      */
     protected $sources;
 
+
+    /**
+     * Class name of the source model.
+     *
+     * @var string
+     */
+    protected $sourceClass;
+
     /**
      * SchemaCrawler constructor.
-     * @param string|null $sourceName
      */
     public function __construct()
     {
-        $sourceClass = config('schema-crawler.source_model');
-        $this->sources = $sourceClass::shouldBeCrawled()->get();
+        $this->sourceClass = config('schema-crawler.source_model');
     }
 
     /**
@@ -40,12 +46,11 @@ class SchemaCrawler
     /**
      * Run a single crawler.
      *
-     * @param Source $source
+     * @param $source
      */
-    public static function runSource(Source $source)
+    public static function runSource($source)
     {
-        $sourceCrawler = $source->getCrawlerClassName();
-        dispatch(new UrlCrawler(new $sourceCrawler($source->id)));
+        return (new static)->dispatchCrawler($source);
     }
 
     /**
@@ -53,9 +58,22 @@ class SchemaCrawler
      */
     protected function dispatchCrawlers()
     {
-        foreach ($this->sources as $source) {
+        foreach ($this->sourceClass::shouldBeCrawled()->get() as $source) {
             $sourceCrawler = $source->getCrawlerClassName();
             dispatch(new UrlCrawler(new $sourceCrawler($source->id)));
         }
+    }
+
+    /**
+     * Dispatch a crawler of a specific source.
+     *
+     * @param $source
+     */
+    protected function dispatchCrawler($source)
+    {
+        $source = $source instanceof Model ? $source : $this->sourceClass::where((new $this->sourceClass())->getRouteKeyName(), $source)
+            ->firstOrFail();
+        $sourceCrawler = $source->getCrawlerClassName();
+        dispatch(new UrlCrawler(new $sourceCrawler($source->id)));
     }
 }

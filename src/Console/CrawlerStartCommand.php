@@ -41,7 +41,7 @@ class CrawlerStartCommand extends Command
         $source = $this->argument('source');
 
         if (empty($source)) {
-            return SchemaCrawler::run();;
+            return SchemaCrawler::run();
         }
 
         SchemaCrawler::runSource($source);
