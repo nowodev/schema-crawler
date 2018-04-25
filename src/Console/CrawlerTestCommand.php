@@ -20,7 +20,7 @@ class CrawlerTestCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Start the schema crawler.';
+    protected $description = 'Run the tests for the sources.';
 
     /**
      * Create a new command instance.
@@ -43,15 +43,23 @@ class CrawlerTestCommand extends Command
         $command = ['vendor/bin/phpunit'];
 
         if (!empty($source)) {
-            if (ends_with('Test', $source)) {
+            if (ends_with($source, 'Test')) {
                 $command[] = '--filter ' . $source;
             } else {
                 $sourceClass = config('schema-crawler.source_model');
-                sourceClass::where((new $sourceClass())->getRouteKeyName(), $source)->firstOrFail();
-                $command[] = '--filter ' . $source->getCrawlerClassName();
+                $source = $sourceClass::where((new $sourceClass())->getRouteKeyName(), $source)->firstOrFail();
+                $name = explode('\\', $source->getCrawlerClassName());
+                $command[] = '--filter ' . array_pop($name) . 'Test';
             }
+        } else {
+            $command[] = str_replace(['\Tests', '\\'], [
+                'tests',
+                '/',
+            ], config('schema-crawler.generator.websource.tests_namespace'));
         }
 
-        return (new Process($command))->run();
+        (new Process(implode(' ', $command)))->run(function ($type, $buffer) {
+            echo $buffer;
+        });
     }
 }
