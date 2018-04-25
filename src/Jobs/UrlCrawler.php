@@ -2,6 +2,7 @@
 
 namespace SchemaCrawler\Jobs;
 
+use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Sources\WebSource;
 use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
@@ -111,7 +112,7 @@ class UrlCrawler implements ShouldQueue
 
             while ($this->getPagingElement()->count()) {
                 $nextUrl = $this->getPagingElement()->first()->attr('href');
-                $this->browseToWebsite($this->generateAbsoluteUrl($nextUrl, $source['url']));
+                $this->browseToWebsite(Helper::generateAbsoluteUrl($nextUrl, $source['url']));
                 $this->getUrlsFromCurrentWebsite();
             }
         }
@@ -132,20 +133,6 @@ class UrlCrawler implements ShouldQueue
         $this->currentWebsite = ChromeHeadless::url($url)->getDOMCrawler();
     }
 
-    private function generateAbsoluteUrl($url, $exampleUrl)
-    {
-        $matches = [];
-        preg_match("/^(http(s?):)?\/\/[0-9A-z\.\-]+\//", $url, $matches);
-
-        if (count($matches)) {
-            return $url;
-        }
-
-        preg_match("/^(http(s?):)?\/\/[0-9A-z\.\-]+\//", $exampleUrl, $matches);
-
-        return $matches[0] . ltrim('/', $url);
-    }
-
     private function getUrlsFromCurrentWebsite($options)
     {
         $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options) {
@@ -155,7 +142,7 @@ class UrlCrawler implements ShouldQueue
 
     private function addUrl(string $url, array $options = null)
     {
-        $url = $this->generateAbsoluteUrl($url);
+        $url = Helper::generateAbsoluteUrl($url);
         array_push($this->urls, compact('url', 'options'));
     }
 }
