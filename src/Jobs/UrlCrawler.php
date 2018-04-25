@@ -111,7 +111,7 @@ class UrlCrawler implements ShouldQueue
 
             while ($this->getPagingElement()->count()) {
                 $nextUrl = $this->getPagingElement()->first()->attr('href');
-                $this->browseToWebsite($this->generateAbsoluteUrl($nextUrl));
+                $this->browseToWebsite($this->generateAbsoluteUrl($nextUrl, $source['url']));
                 $this->getUrlsFromCurrentWebsite();
             }
         }
@@ -132,7 +132,7 @@ class UrlCrawler implements ShouldQueue
         $this->currentWebsite = ChromeHeadless::url($url)->getDOMCrawler();
     }
 
-    private function generateAbsoluteUrl($url)
+    private function generateAbsoluteUrl($url, $exampleUrl)
     {
         $matches = [];
         preg_match("/^(http(s?):)?\/\/[0-9A-z\.\-]+\//", $url, $matches);
@@ -141,7 +141,9 @@ class UrlCrawler implements ShouldQueue
             return $url;
         }
 
-        return $matches[0] . trim('/', $url);
+        preg_match("/^(http(s?):)?\/\/[0-9A-z\.\-]+\//", $exampleUrl, $matches);
+
+        return $matches[0] . ltrim('/', $url);
     }
 
     private function getUrlsFromCurrentWebsite($options)
