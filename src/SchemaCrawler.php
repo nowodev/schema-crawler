@@ -6,6 +6,7 @@ namespace SchemaCrawler;
 
 use Illuminate\Database\Eloquent\Collection;
 use SchemaCrawler\Jobs\UrlCrawler;
+use SchemaCrawler\Models\Source;
 
 class SchemaCrawler
 {
@@ -18,6 +19,7 @@ class SchemaCrawler
 
     /**
      * SchemaCrawler constructor.
+     * @param string|null $sourceName
      */
     public function __construct()
     {
@@ -33,6 +35,17 @@ class SchemaCrawler
     public static function run()
     {
         return (new static)->dispatchCrawlers();
+    }
+
+    /**
+     * Run a single crawler.
+     *
+     * @param Source $source
+     */
+    public static function runSource(Source $source)
+    {
+        $sourceCrawler = $source->getCrawlerClassName();
+        dispatch(new UrlCrawler(new $sourceCrawler($source->id)));
     }
 
     /**

@@ -12,7 +12,7 @@ class CrawlerStartCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'crawler:start';
+    protected $signature = 'crawler:start {source?}';
 
     /**
      * The console command description.
@@ -38,6 +38,12 @@ class CrawlerStartCommand extends Command
      */
     public function handle()
     {
-        SchemaCrawler::run();
+        $source = $this->argument('source');
+
+        if (empty($source)) {
+            return SchemaCrawler::run();;
+        }
+
+        SchemaCrawler::runSource($source);
     }
 }
