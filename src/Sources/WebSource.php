@@ -170,6 +170,13 @@ abstract class WebSource
             return false;
         }
 
+        $cssSelector = $this->cssSelectors['detail'][$attribute];
+
+        // return null if no css selector is defined
+        if (empty($cssSelector)) {
+            return null;
+        }
+
         // get the element of the DOM by the defined CSS selector
         $element = $detailPage->filter($this->cssSelectors['detail'][$attribute]);
 
