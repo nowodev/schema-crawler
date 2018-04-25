@@ -6,6 +6,7 @@ namespace SchemaCrawler\Console;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Facades\Config;
+use Symfony\Component\Console\Input\InputOption;
 
 class WebSourceMakeCommand extends GeneratorCommand
 {
