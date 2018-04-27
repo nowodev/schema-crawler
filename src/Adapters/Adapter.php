@@ -109,6 +109,18 @@ abstract class Adapter
         return $data;
     }
 
+    /**
+     * Get an adapter option by a key.
+     *
+     * @param string $key Option key.
+     * @param null   $default Default value which should be returned if no key is found.
+     * @return mixed Value of the option key.
+     */
+    protected function getOption(string $key, $default = null)
+    {
+        return array_get($this->options, $key, $default);
+    }
+
     private function addBailToValidationRules()
     {
         foreach ($this->allowedAttributes as $attribute => $validation) {
