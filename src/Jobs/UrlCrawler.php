@@ -21,7 +21,7 @@ class UrlCrawler implements ShouldQueue
      *
      * @var WebSource
      */
-    protected $source;
+    public $source;
 
     /**
      * The CSS selectors for the paging.
@@ -69,7 +69,7 @@ class UrlCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->getUrlsFromSources();
+        $this->urls = $this->getUrlsFromSources();
 
         $this->mergeDuplicateUrls();
 
@@ -98,13 +98,15 @@ class UrlCrawler implements ShouldQueue
         $this->urls = $newUrls;
     }
 
-    private function getUrlsFromSources()
+    public function getUrlsFromSources()
     {
+        $urls = [];
+
         foreach ($this->source->getSourceUrls() as $source) {
 
             $this->browseToWebsite($source['url']);
 
-            $this->getUrlsFromCurrentWebsite($source['options']);
+            $urls[] = $this->getUrlsFromCurrentWebsite($source['options']);
 
             if (!$this->pagingEnabled()) {
                 continue;
@@ -116,6 +118,8 @@ class UrlCrawler implements ShouldQueue
                 $this->getUrlsFromCurrentWebsite();
             }
         }
+
+        return $urls;
     }
 
     private function getPagingElement()
@@ -135,14 +139,14 @@ class UrlCrawler implements ShouldQueue
 
     private function getUrlsFromCurrentWebsite($options)
     {
-        $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options) {
-            $this->addUrl($link->attr('href'), $options);
-        });
-    }
+        $urls = [];
+        $absoluteUrl = $this->source->getSourceUrls()[0]['url'];
 
-    private function addUrl(string $url, array $options = null)
-    {
-        $url = Helper::generateAbsoluteUrl($url);
-        array_push($this->urls, compact('url', 'options'));
+        $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options, $absoluteUrl) {
+            $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
+            $urls[] = compact('url', 'options');
+        });
+
+        return $urls;
     }
 }
