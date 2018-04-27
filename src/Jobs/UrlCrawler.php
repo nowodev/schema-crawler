@@ -122,7 +122,7 @@ class UrlCrawler implements ShouldQueue
         $urls = [];
         $absoluteUrl = $this->source->getSourceUrls()[0]['url'];
 
-        $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options, $absoluteUrl) {
+        $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options, $absoluteUrl, &$urls) {
             $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
             $urls[] = compact('url', 'options');
         });
