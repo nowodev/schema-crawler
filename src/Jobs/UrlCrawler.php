@@ -69,9 +69,7 @@ class UrlCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->urls = $this->getUrlsFromSources();
-
-        $this->mergeDuplicateUrls();
+        $this->urls = Helper::mergeDuplicateUrls($this->getUrlsFromSources());
 
         $sourceModel = $this->source->getSourceModelClass();
         $sourceModel::findOrFail($this->source->getId())->urlsCrawledEvent($this->urls);
@@ -79,23 +77,6 @@ class UrlCrawler implements ShouldQueue
         foreach ($this->urls as $detailPage) {
             dispatch(new DetailCrawler($detailPage['url'], $detailPage['options'], $this->source));
         }
-    }
-
-    private function mergeDuplicateUrls()
-    {
-        $newUrls = [];
-
-        foreach ($this->urls as $el) {
-            $key = array_search($el['url'], array_column($newUrls, 'url'));
-            if ($key === false) {
-                array_push($newUrls, $el);
-                continue;
-            }
-            $newUrls[$key] = array_merge_recursive(array_filter($el), $newUrls[$key]);
-            $newUrls[$key]['url'] = implode('', array_unique($newUrls[$key]['url']));
-        }
-
-        $this->urls = $newUrls;
     }
 
     public function getUrlsFromSources()

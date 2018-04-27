@@ -37,4 +37,27 @@ class Helper
     {
         return preg_replace('/[\s\s]+/u', ' ', trim(html_entity_decode($input), ".:=- \n\t\r\0\x0B\xC2\xA0"));
     }
+
+    /**
+     * Merge duplicate urls from array.
+     *
+     * @param array $urls
+     * @return array
+     */
+    public static function mergeDuplicateUrls(array $urls)
+    {
+        $newUrls = [];
+
+        foreach ($urls as $el) {
+            $key = array_search($el['url'], array_column($newUrls, 'url'));
+            if ($key === false) {
+                array_push($newUrls, $el);
+                continue;
+            }
+            $newUrls[$key] = array_merge_recursive(array_filter($el), $newUrls[$key]);
+            $newUrls[$key]['url'] = implode('', array_unique($newUrls[$key]['url']));
+        }
+
+        return $newUrls;
+    }
 }
