@@ -85,6 +85,16 @@ class DetailCrawler implements ShouldQueue
     }
 
     /**
+     * Get the url.
+     *
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
