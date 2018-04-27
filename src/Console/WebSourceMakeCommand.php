@@ -15,7 +15,7 @@ class WebSourceMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $name = 'make:websource {name}';
+    protected $name = 'make:websource';
     /**
      * The console command description.
      *
