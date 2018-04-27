@@ -63,22 +63,11 @@ abstract class Adapter
     }
 
     /**
-     * Helper function to trim a string.
-     *
-     * @param String $input
-     * @return null|string|string[]
-     */
-    protected function normalize(String $input)
-    {
-        return preg_replace('/[\s\s]+/u', ' ', trim(html_entity_decode($input), ".:=- \n\t\r\0\x0B\xC2\xA0"));
-    }
-
-    /**
      * Return all attributes.
      *
      * @return array
      */
-    protected function getAttributes()
+    public function getAttributes()
     {
         $attributes = [];
         foreach (array_keys($this->allowedAttributes) as $attribute) {
@@ -98,7 +87,7 @@ abstract class Adapter
     public function validateAndGetData()
     {
         $data = $this->getAttributes();
-        $validator = \Validator::make($data, $this->allowedAttributes);
+        $validator = \Validator::make($data, $this->getValidationRules());
         if ($validator->fails()) {
             throw new InvalidSchema($validator, $this->rawData, $data);
         }
@@ -116,9 +105,19 @@ abstract class Adapter
      * @param null   $default Default value which should be returned if no key is found.
      * @return mixed Value of the option key.
      */
-    protected function getOption(string $key, $default = null)
+    public function getOption(string $key, $default = null)
     {
         return array_get($this->options, $key, $default);
+    }
+
+    /**
+     * Get the validation rules.
+     *
+     * @return array
+     */
+    public function getValidationRules()
+    {
+        return $this->allowedAttributes;
     }
 
     private function addBailToValidationRules()
