@@ -37,12 +37,6 @@ class UrlCrawler implements ShouldQueue
      */
     protected $urls = [];
 
-    /**
-     * The DOM of the current website.
-     *
-     * @var Crawler
-     */
-    protected $currentWebsite = null;
 
     /**
      * The number of times the job may be attempted.
@@ -69,42 +63,57 @@ class UrlCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->urls = Helper::mergeDuplicateUrls($this->getUrlsFromSources());
-        $sourceModel = $this->source->getSourceModelClass();
-        $sourceModel::findOrFail($this->source->getId())->urlsCrawledEvent($this->urls);
+        $urls = $this->getUrlsFromSources($this->source->getSourceUrls());
 
-        foreach ($this->urls as $detailPage) {
+        $urls = Helper::mergeDuplicateUrls($urls);
+
+        $sourceModel = $this->source->getSourceModelClass();
+
+        $sourceModel::findOrFail($this->source->getId())->urlsCrawledEvent($urls);
+
+        $this->runDetailCrawlers($urls);
+    }
+
+    /**
+     * Run the detail crawler for each url.
+     *
+     * @param array $urls
+     */
+    public function runDetailCrawlers(array $urls)
+    {
+        foreach ($urls as $detailPage) {
             dispatch(new DetailCrawler($detailPage['url'], $detailPage['options'], $this->source));
         }
     }
 
-    protected function getUrlsFromSources()
+    protected function getUrlsFromSources(array $sourceUrls)
     {
         $urls = [];
+        $currentWebsite = null;
 
-        foreach ($this->source->getSourceUrls() as $source) {
+        foreach ($sourceUrls as $source) {
 
-            $this->browseToWebsite($source['url']);
+            $currentWebsite = $this->browseToWebsite($source['url']);
 
-            $urls = array_merge($urls, $this->getUrlsFromCurrentWebsite($source['options']));
+            $urls = array_merge($urls, $this->getUrlsFromWebsite($currentWebsite, $source['options']));
 
             if (!$this->pagingEnabled()) {
                 continue;
             }
 
-            while ($this->getPagingElement()->count()) {
+            while ($this->getPagingElementOfWebsite($currentWebsite)->count()) {
                 $nextUrl = $this->getPagingElement()->first()->attr('href');
-                $this->browseToWebsite(Helper::generateAbsoluteUrl($nextUrl, $source['url']));
-                $urls = array_merge($urls, $this->getUrlsFromCurrentWebsite($source['options']));
+                $currentWebsite = $this->browseToWebsite(Helper::generateAbsoluteUrl($nextUrl, $source['url']));
+                $urls = array_merge($urls, $this->getUrlsFromWebsite($currentWebsite, $source['options']));
             }
         }
 
         return $urls;
     }
 
-    private function getPagingElement()
+    private function getPagingElementOfWebsite(Crawler $website)
     {
-        return $this->currentWebsite->filter($this->cssSelectors['nextPageLink']);
+        return $website->filter($this->cssSelectors['nextPageLink']);
     }
 
     private function pagingEnabled()
@@ -114,16 +123,17 @@ class UrlCrawler implements ShouldQueue
 
     private function browseToWebsite(string $url)
     {
-        $this->currentWebsite = ChromeHeadless::url($url)->getDOMCrawler();
+        return ChromeHeadless::url($url)->getDOMCrawler();
     }
 
-    private function getUrlsFromCurrentWebsite($options)
+    private function getUrlsFromWebsite(Crawler $website, $options)
     {
         $urls = [];
         $absoluteUrl = $this->source->getSourceUrls()[0]['url'];
 
-        $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options, $absoluteUrl, &$urls) {
+        $website->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options, $absoluteUrl, &$urls) {
             $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
+            $options = $options ?: [];
             $urls[] = compact('url', 'options');
         });
 

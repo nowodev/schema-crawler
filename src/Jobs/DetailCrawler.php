@@ -95,6 +95,16 @@ class DetailCrawler implements ShouldQueue
     }
 
     /**
+     * Get the options.
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
