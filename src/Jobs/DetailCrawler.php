@@ -3,9 +3,11 @@
 namespace SchemaCrawler\Jobs;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Exceptions\InvalidSchema;
+use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Sources\WebSource;
 use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
@@ -13,6 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Symfony\Component\DomCrawler\Crawler;
 
 class DetailCrawler implements ShouldQueue
 {
@@ -54,13 +57,6 @@ class DetailCrawler implements ShouldQueue
     protected $websiteDOM = null;
 
     /**
-     * The class name of the schema model.
-     *
-     * @var string
-     */
-    protected $schemaClass = null;
-
-    /**
      * The number of times the job may be attempted.
      *
      * @var int
@@ -81,7 +77,6 @@ class DetailCrawler implements ShouldQueue
         $this->options = $options;
         $this->source = $source;
         $this->cssSelectors = $source->getCssSelectors()['detail'];
-        $this->schemaClass = $source->getSchemaModelClass();
     }
 
     /**
@@ -112,18 +107,21 @@ class DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->browseToWebsite();
+        $website = $this->browseToWebsite($this->url);
 
-        $rawData = $this->getDataFromWebsite()->validate();
+        $rawData = $this->getDataFromWebsite($website);
+
+        $rawData->validate();
 
         $adapter = $this->createAdapterFromData($rawData);
 
-        $data = $this->mergeOptions($adapter->validateAndGetData());
+        $data = Helper::overwriteArray($this->options, $adapter->validateAndGetData());
 
-        $schema = $this->findExistingSchema($data);
+        $schemaClass = $this->source->getSchemaModelClass();
+        $schema = $this->findExistingSchema($schemaClass, $data);
 
         if ($schema == null) {
-            $this->schemaClass::createFromCrawlerData($data);
+            $schemaClass::createFromCrawlerData($data);
         } else {
             $schema->updateFromCrawlerData($data);
         }
@@ -150,46 +148,49 @@ class DetailCrawler implements ShouldQueue
         }
     }
 
-    private function browseToWebsite()
+    private function browseToWebsite($url)
     {
-        $this->websiteDOM = ChromeHeadless::url($this->url)->getDOMCrawler();
+        return ChromeHeadless::url($url)->getDOMCrawler();
     }
 
-    private function getDataFromWebsite()
+    private function getDataFromWebsite(Crawler $website)
     {
         $data = new RawData($this->url, $this->source->getId());
 
         foreach ($this->cssSelectors as $attribute => $cssSelector) {
-            $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($this->websiteDOM);
+            $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($website);
         }
 
         return $data;
     }
 
-    private function createAdapterFromData($data)
+    /**
+     * Generates an adapter with the given raw data.
+     *
+     * @param RawData $data
+     * @return mixed
+     */
+    public function createAdapterFromData(RawData $data)
     {
         $adapterClass = $this->source->getAdapterClass();
-
         return new $adapterClass($data, $this->source->getAdapterOptions(), config('schema-crawler.attributes_to_crawl'));
     }
 
-    private function findExistingSchema($data)
+    /**
+     * Find an existing schema by the given data.
+     *
+     * @param $schemaClass
+     * @param $data
+     * @return Model|null
+     */
+    public function findExistingSchema($schemaClass, $data)
     {
-        $query = $this->schemaClass::query();
+        $query = $schemaClass::query();
 
-        foreach ($this->schemaClass::getUniqueKeys() as $key) {
+        foreach ($schemaClass::getUniqueKeys() as $key) {
             $query->where($key, $data[$key]);
         }
 
         return $query->first();
-    }
-
-    private function mergeOptions($data)
-    {
-        foreach ($this->options as $key => $value) {
-            $data[$key] = $value;
-        }
-
-        return $data;
     }
 }

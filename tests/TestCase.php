@@ -75,5 +75,19 @@ abstract class TestCase extends BaseTestCase
             'name' => 'Good Books',
             'url'  => 'https://www.goodbooksstore.com/',
         ]);
+
+        Book::create([
+            'title' => 'The Better Angels of Our Nature : A History of Violence and Humanity',
+            'author' => 'Steven Pinker',
+            'category' => ['Social & Cultural History', 'Violence In Society', 'Psychology'],
+            'isbn' => '9780141034645',
+        ]);
+
+        Book::create([
+            'title' => 'The Second Sex',
+            'author' => 'Simone de Beauvoir',
+            'category' => ['Feminism & Feminist Theory', 'Gender Studies'],
+            'isbn' => '9780099499381',
+        ]);
     }
 }

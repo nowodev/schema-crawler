@@ -60,4 +60,20 @@ class Helper
 
         return $newUrls;
     }
+
+    /**
+     * Overwrite multiple values of an array.
+     *
+     * @param array $newValues
+     * @param array $array
+     * @return array
+     */
+    public static function overwriteArray(array $newValues, array $array)
+    {
+        foreach ($newValues as $key => $value) {
+            $array[$key] = $value;
+        }
+
+        return $array;
+    }
 }

@@ -100,4 +100,23 @@ class HelperTest extends TestCase
 
         $this->assertEquals($expected, Helper::mergeDuplicateUrls($urls));
     }
+
+    /** @test */
+    public function it_can_overwrite_an_array(){
+        $newValues = [
+            'category' => ['Nice Category']
+        ];
+
+        $array = [
+            'title' => 'A title',
+            'author' => 'A author',
+            'category' => ['Some Category']
+        ];
+
+        $this->assertEquals([
+            'title' => 'A title',
+            'author' => 'A author',
+            'category' => ['Nice Category']
+        ], Helper::overwriteArray($newValues, $array));
+    }
 }
