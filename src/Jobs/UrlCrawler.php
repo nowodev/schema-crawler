@@ -102,7 +102,7 @@ class UrlCrawler implements ShouldQueue
             }
 
             while ($this->getPagingElementOfWebsite($currentWebsite)->count()) {
-                $nextUrl = $this->getPagingElement()->first()->attr('href');
+                $nextUrl = $this->getPagingElementOfWebsite()->first()->attr('href');
                 $currentWebsite = $this->browseToWebsite(Helper::generateAbsoluteUrl($nextUrl, $source['url']));
                 $urls = array_merge($urls, $this->getUrlsFromWebsite($currentWebsite, $source['options']));
             }
