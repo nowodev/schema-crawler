@@ -86,7 +86,7 @@ class UrlCrawler implements ShouldQueue
 
             $this->browseToWebsite($source['url']);
 
-            array_push($urls, $this->getUrlsFromCurrentWebsite($source['options']));
+            $urls = array_merge($urls, $this->getUrlsFromCurrentWebsite($source['options']));
 
             if (!$this->pagingEnabled()) {
                 continue;
@@ -95,7 +95,7 @@ class UrlCrawler implements ShouldQueue
             while ($this->getPagingElement()->count()) {
                 $nextUrl = $this->getPagingElement()->first()->attr('href');
                 $this->browseToWebsite(Helper::generateAbsoluteUrl($nextUrl, $source['url']));
-                array_push($urls, $this->getUrlsFromCurrentWebsite($source['options']));
+                $urls = array_merge($urls, $this->getUrlsFromCurrentWebsite($source['options']));
             }
         }
 
@@ -124,7 +124,7 @@ class UrlCrawler implements ShouldQueue
 
         $this->currentWebsite->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options, $absoluteUrl, &$urls) {
             $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
-            array_push($urls, compact('url', 'options'));
+            $urls[] = compact('url', 'options');
         });
 
         return $urls;
