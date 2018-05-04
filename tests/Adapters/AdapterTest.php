@@ -69,6 +69,7 @@ class AdapterTest extends TestCase
     {
         $url = 'http://www.bookstore.com/product/1234';
         $sourceId = 1;
+        $adapterOptions = ['convertIsbn' => true];
 
         $rawData = new RawData($url, $sourceId);
 
@@ -82,9 +83,11 @@ class AdapterTest extends TestCase
             $rawData->{$key} = $value;
         }
 
-        $adapter = new BookAdapter($rawData, [], config('schema-crawler.attributes_to_crawl'));
+        $adapter = new BookAdapter($rawData, $adapterOptions, config('schema-crawler.attributes_to_crawl'));
 
-        $this->assertEquals(array_merge($attributes, compact('url', 'sourceId')), $adapter->validateAndGetData());
+        $attributes['isbn'] = '978' . $attributes['isbn'] . '3';
+
+        $this->assertEquals(array_merge($attributes, compact('url', 'sourceId', 'adapterOptions')), $adapter->validateAndGetData());
     }
 
     /** @test */
@@ -92,6 +95,7 @@ class AdapterTest extends TestCase
     {
         $url = 'http://www.bookstore.com/product/1234';
         $sourceId = 1;
+        $adapterOptions = [];
 
         $rawData = new RawData($url, $sourceId);
 
@@ -105,9 +109,9 @@ class AdapterTest extends TestCase
             $rawData->{$key} = $value;
         }
 
-        $adapter = new BookAdapter($rawData, [], config('schema-crawler.attributes_to_crawl'));
+        $adapter = new BookAdapter($rawData, $adapterOptions, config('schema-crawler.attributes_to_crawl'));
 
         $this->expectException(InvalidSchema::class);
-        $this->assertEquals(array_merge($attributes, compact('url', 'sourceId')), $adapter->validateAndGetData());
+        $this->assertEquals(array_merge($attributes, compact('url', 'sourceId', 'adapterOptions')), $adapter->validateAndGetData());
     }
 }
