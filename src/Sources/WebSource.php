@@ -172,8 +172,8 @@ abstract class WebSource
 
         $detailSelector = $this->cssSelectors['detail'][$attribute];
 
-        $cssSelector = is_array($detailSelector) ? $detailSelector[0] : $detailSelector;
-        $htmlAttribute = is_array($detailSelector) ? $detailSelector[1] : null;
+        $cssSelector = is_array($detailSelector) ? array_keys($detailSelector)[0] : $detailSelector;
+        $htmlAttribute = is_array($detailSelector) ? array_values($detailSelector)[0] : null;
 
         // return null if no css selector is defined
         if (empty($cssSelector)) {
