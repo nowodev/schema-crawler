@@ -27,6 +27,13 @@ class CoolBooks extends WebSource
     ];
 
     /**
+     * Options defined here will be accessible in the adapter.
+     *
+     * @var array
+     */
+    protected $adapterOptions = ['convertIsbn' => true];
+
+    /**
      * The CSS selectors of the paging and the attributes of the schema.
      *
      * @var array
@@ -43,11 +50,4 @@ class CoolBooks extends WebSource
             'category' => null
         ],
     ];
-
-    /**
-     * Options defined here will be accessible in the adapter.
-     *
-     * @var array
-     */
-    protected $adapterOptions = ['convertIsbn' => true];
 }

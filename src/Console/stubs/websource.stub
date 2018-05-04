@@ -18,6 +18,13 @@ class DummyClass extends DummyParentWebSource
     ];
 
     /**
+     * Options defined here will be accessible in the adapter.
+     *
+     * @var array
+     */
+    protected $adapterOptions = [];
+
+    /**
      * The CSS selectors of the paging and the attributes of the schema.
      *
      * @var array
@@ -29,11 +36,4 @@ class DummyClass extends DummyParentWebSource
         ],
         'detail'   => ['DummyAttributes'],
     ];
-
-    /**
-     * Options defined here will be accessible in the adapter.
-     *
-     * @var array
-     */
-    protected $adapterOptions = [];
 }
