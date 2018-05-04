@@ -170,7 +170,10 @@ abstract class WebSource
             return false;
         }
 
-        $cssSelector = $this->cssSelectors['detail'][$attribute];
+        $detailSelector = $this->cssSelectors['detail'][$attribute];
+
+        $cssSelector = is_array($detailSelector) ? $detailSelector[0] : $detailSelector;
+        $htmlAttribute = is_array($detailSelector) ? $detailSelector[1] : null;
 
         // return null if no css selector is defined
         if (empty($cssSelector)) {
@@ -178,9 +181,14 @@ abstract class WebSource
         }
 
         // get the element of the DOM by the defined CSS selector
-        $element = $detailPage->filter($this->cssSelectors['detail'][$attribute]);
+        $element = $detailPage->filter($cssSelector);
+
+        // return null if no element has been found
+        if ($element->count() == 0) {
+            return null;
+        }
 
         // by default return the inner text of the selected DOM element
-        return $element->count() ? $element->text() : null;
+        return $htmlAttribute ? $element->attr($htmlAttribute) : $element->text();
     }
 }
