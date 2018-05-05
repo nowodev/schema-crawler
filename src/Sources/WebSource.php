@@ -190,7 +190,7 @@ abstract class WebSource
         }
 
         // if attribute has been defined as array in the options, return all elements
-        if ($options AND array_has($options, 'array')) {
+        if ($options AND in_array('array', $options)) {
             return $element->each(function (Crawler $node) use ($htmlAttribute) {
                 return $htmlAttribute ? $node->attr($htmlAttribute) : $node->text();
             });
