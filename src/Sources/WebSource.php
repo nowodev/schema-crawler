@@ -173,7 +173,8 @@ abstract class WebSource
         $detailSelector = $this->cssSelectors['detail'][$attribute];
 
         $cssSelector = is_array($detailSelector) ? array_keys($detailSelector)[0] : $detailSelector;
-        $htmlAttribute = is_array($detailSelector) ? array_values($detailSelector)[0] : null;
+        $options = is_array($detailSelector) ? explode('|', array_values($detailSelector)[0]) : null;
+        $htmlAttribute = $options ? implode('', array_diff($options, ['array'])) : null;
 
         // return null if no css selector is defined
         if (empty($cssSelector)) {
@@ -188,7 +189,14 @@ abstract class WebSource
             return null;
         }
 
+        // if attribute has been defined as array in the options, return all elements
+        if ($options AND array_has($options, 'array')) {
+            return $element->each(function (Crawler $node) use ($htmlAttribute) {
+                return $htmlAttribute ? $node->attr($htmlAttribute) : $node->text();
+            });
+        }
+
         // by default return the inner text of the selected DOM element
-        return $htmlAttribute ? $element->attr($htmlAttribute) : $element->text();
+        return $htmlAttribute ? $element->first()->attr($htmlAttribute) : $element->first()->text();
     }
 }
