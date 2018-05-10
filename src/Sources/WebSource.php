@@ -198,8 +198,8 @@ abstract class WebSource
 
         // get attribute from json array
         if ($options AND in_array('json', $options)) {
-            $json = $detailPage->filter('script[type="application/ld+json"]');
-            return $json->count() ? data_get(json_decode($json->text()), $htmlAttribute, null) : null;
+            $json = $detailPage->filter('script[type*="json"]');
+            return $json->count() ? data_get(json_decode($json->last()->text()), $htmlAttribute, null) : null;
         }
 
         // by default return the inner text of the selected DOM element
