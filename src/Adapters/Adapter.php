@@ -30,17 +30,26 @@ abstract class Adapter
     protected $allowedAttributes = [];
 
     /**
+     * The name and specification of the attributes that should be overwritten.
+     *
+     * @var array
+     */
+    protected $overwrittenAttributes = [];
+
+    /**
      * Adapter constructor.
      *
      * @param RawData $rawData
      * @param array   $options
      * @param array   $allowedAttributes
+     * @param array   $overwrittenAttributes
      */
-    public function __construct(RawData $rawData, array $options, array $allowedAttributes)
+    public function __construct(RawData $rawData, array $options, array $allowedAttributes, array $overwrittenAttributes = [])
     {
         $this->rawData = $rawData;
         $this->options = $options;
         $this->allowedAttributes = $allowedAttributes;
+        $this->overwrittenAttributes = $overwrittenAttributes;
         $this->addBailToValidationRules();
     }
 
@@ -57,6 +66,10 @@ abstract class Adapter
         if (!in_array($attribute, array_keys($this->allowedAttributes))) {
             // attributes doesn't exist
             return false;
+        }
+
+        if (in_array($attribute, array_keys($this->overwrittenAttributes))) {
+            return $this->overwrittenAttributes[$attribute];
         }
 
         return $this->rawData->{$attribute};

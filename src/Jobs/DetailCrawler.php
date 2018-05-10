@@ -173,7 +173,7 @@ class DetailCrawler implements ShouldQueue
     public function createAdapterFromData(RawData $data)
     {
         $adapterClass = $this->source->getAdapterClass();
-        return new $adapterClass($data, $this->source->getAdapterOptions(), config('schema-crawler.attributes_to_crawl'));
+        return new $adapterClass($data, $this->source->getAdapterOptions(), config('schema-crawler.attributes_to_crawl'), $this->options);
     }
 
     /**

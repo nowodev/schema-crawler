@@ -31,6 +31,28 @@ class AdapterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_get_overwritten_attributes()
+    {
+        $rawData = new RawData('http://www.bookstore.com/product/1234', 1);
+
+        $attributes = [
+            'title'  => 'A good book title',
+            'author' => 'John Doe',
+            'isbn'   => '42352345623',
+        ];
+
+        foreach ($attributes as $key => $value) {
+            $rawData->{$key} = $value;
+        }
+
+        $adapter = new BookAdapter($rawData, [], config('schema-crawler.attributes_to_crawl'), ['title' => 'the overwritten title']);
+
+        $attributes['title'] = 'the overwritten title';
+
+        $this->assertEquals($attributes, $adapter->getAttributes());
+    }
+
+    /** @test */
     public function it_can_get_the_options()
     {
         $rawData = new RawData('http://www.bookstore.com/product/1234', 1);
