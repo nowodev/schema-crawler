@@ -174,7 +174,7 @@ abstract class WebSource
 
         $cssSelector = is_array($detailSelector) ? array_keys($detailSelector)[0] : $detailSelector;
         $options = is_array($detailSelector) ? explode('|', array_values($detailSelector)[0]) : null;
-        $htmlAttribute = $options ? implode('', array_diff($options, ['array'])) : null;
+        $htmlAttribute = $options ? implode('', array_diff($options, ['array', 'json'])) : null;
 
         // return null if no css selector is defined
         if (empty($cssSelector)) {
@@ -194,6 +194,12 @@ abstract class WebSource
             return $element->each(function (Crawler $node) use ($htmlAttribute) {
                 return $htmlAttribute ? $node->attr($htmlAttribute) : $node->text();
             });
+        }
+
+        // get attribute from json array
+        if ($options AND in_array('json', $options)) {
+            $json = $detailPage->filter('script[type="application/ld+json"]');
+            return $json->count() ? array_get(json_decode($json->text()), $htmlAttribute, null) : null;
         }
 
         // by default return the inner text of the selected DOM element
