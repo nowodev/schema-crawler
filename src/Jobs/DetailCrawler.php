@@ -115,7 +115,7 @@ class DetailCrawler implements ShouldQueue
 
         $adapter = $this->createAdapterFromData($rawData);
 
-        $data = Helper::overwriteArray($this->options, $adapter->validateAndGetData());
+        $data = $adapter->validateAndGetData();
 
         $schemaClass = $this->source->getSchemaModelClass();
         $schema = $this->findExistingSchema($schemaClass, $data);
