@@ -40,6 +40,10 @@ abstract class SourceTest extends TestCase
     /** @test */
     public function it_can_get_schema_urls_from_source_pages()
     {
+        if (!empty($this->websource->getCustomSchemaUrls())) {
+            return $this->assertGreaterThan(0, count($this->websource->getCustomSchemaUrls()));
+        }
+
         foreach ($this->sourceUrls as $sourcePage) {
             $sourcePageDOM = ChromeHeadless::url($sourcePage['url'])->getDOMCrawler();
             $this->assertGreaterThan(0, $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])
@@ -48,7 +52,8 @@ abstract class SourceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_the_paging()
+    public
+    function it_can_get_the_paging()
     {
         if (empty($this->cssSelectors['overview']['nextPageLink'])) {
             return $this->assertTrue(true); // this source has no paging enabled
@@ -65,10 +70,16 @@ abstract class SourceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_the_required_attributes()
+    public
+    function it_can_get_the_required_attributes()
     {
-        $sourcePageDOM = ChromeHeadless::url($this->sourceUrls[0]['url'])->getDOMCrawler();
-        $detailPageUrl = $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])->attr('href');
+        if (!empty($this->websource->getCustomSchemaUrls())) {
+            $detailPageUrl = $this->websource->getCustomSchemaUrls()[0]['url'];
+        } else {
+            $sourcePageDOM = ChromeHeadless::url($this->sourceUrls[0]['url'])->getDOMCrawler();
+            $detailPageUrl = $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])->attr('href');
+        }
+
         $detailPageDOM = ChromeHeadless::url(Helper::generateAbsoluteUrl($detailPageUrl, $this->sourceUrls[0]['url']))
             ->getDOMCrawler();
 
@@ -81,8 +92,13 @@ abstract class SourceTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_get_schema_urls_from_invalid_sources()
+    public
+    function it_does_not_get_schema_urls_from_invalid_sources()
     {
+        if (!empty($this->websource->getCustomSchemaUrls())) {
+            return $this->assertTrue(true);
+        }
+
         $invalidSourceUrl = str_replace_last('/', '/ooops123', $this->sourceUrls[0]['url']);
         $sourcePageDOM = ChromeHeadless::url($invalidSourceUrl)->getDOMCrawler();
         $this->assertEquals(0, $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])
@@ -90,7 +106,8 @@ abstract class SourceTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_get_attributes_from_invalid_pages()
+    public
+    function it_does_not_get_attributes_from_invalid_pages()
     {
         $sourcePageDOM = ChromeHeadless::url($this->sourceUrls[0]['url'])->getDOMCrawler();
         $invalidDetailPageUrl = str_replace_last('/', '/ooops123', $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])
