@@ -149,6 +149,16 @@ abstract class WebSource
     }
 
     /**
+     * Custom function to get the schema urls.
+     *
+     * @return array
+     */
+    public function getCustomSchemaUrls(): array
+    {
+        return [];
+    }
+
+    /**
      * Dynamic getters for the defined attributes.
      *
      * @param $name

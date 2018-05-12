@@ -63,7 +63,7 @@ class UrlCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $urls = $this->getUrlsFromSources($this->source->getSourceUrls());
+        $urls = $this->source->getCustomSchemaUrls() ?: $this->getUrlsFromSources($this->source->getSourceUrls());
 
         $urls = Helper::mergeDuplicateUrls($urls);
 
