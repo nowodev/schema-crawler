@@ -16,20 +16,20 @@ class UrlCrawlerTest extends TestCase
     public function it_dispatches_detail_crawlers()
     {
         $urls = [[
-                     'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
-                     'options' => ['category' => ['crime', 'history']]
+                     'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
+                     'overwriteAttributes' => ['category' => ['crime', 'history']]
                  ],
                  [
-                     'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
-                     'options' => ['category' => 'crime', 'children' => false]
+                     'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
+                     'overwriteAttributes' => ['category' => 'crime', 'children' => false]
                  ],
                  [
-                     'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
-                     'options' => ['children' => false]
+                     'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
+                     'overwriteAttributes' => ['children' => false]
                  ],
                  [
-                     'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-4',
-                     'options' => []
+                     'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-4',
+                     'overwriteAttributes' => []
                  ]
         ];
 
@@ -39,7 +39,7 @@ class UrlCrawlerTest extends TestCase
 
         foreach ($urls as $url) {
             Queue::assertPushed(DetailCrawler::class, function (DetailCrawler $job) use ($url) {
-                return $job->getUrl() === $url['url'] AND $job->getOptions() === $url['options'];
+                return $job->getUrl() === $url['url'] AND $job->getOptions() === $url['overwriteAttributes'];
             });
         }
     }

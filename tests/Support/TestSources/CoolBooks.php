@@ -16,11 +16,11 @@ class CoolBooks extends WebSource
     protected $sourceUrls = [
         [
             'url'     => 'https://www.coolbooksstore.com/crime',
-            'options' => [
+            'overwriteAttributes' => [
                 'category' => 'crime'
             ],
             'url'     => 'https://www.coolbooksstore.com/history',
-            'options' => [
+            'overwriteAttributes' => [
                 'category' => 'history'
             ],
         ],

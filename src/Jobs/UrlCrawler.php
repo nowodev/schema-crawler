@@ -82,7 +82,7 @@ class UrlCrawler implements ShouldQueue
     public function runDetailCrawlers(array $urls)
     {
         foreach ($urls as $detailPage) {
-            dispatch(new DetailCrawler($detailPage['url'], $detailPage['options'], $this->source));
+            dispatch(new DetailCrawler($detailPage['url'], $detailPage['overwriteAttributes'], $this->source));
         }
     }
 
@@ -95,7 +95,7 @@ class UrlCrawler implements ShouldQueue
 
             $currentWebsite = $this->browseToWebsite($source['url']);
 
-            $urls = array_merge($urls, $this->getUrlsFromWebsite($currentWebsite, $source['options']));
+            $urls = array_merge($urls, $this->getUrlsFromWebsite($currentWebsite, $source['overwriteAttributes']));
 
             if (!$this->pagingEnabled()) {
                 continue;
@@ -104,7 +104,7 @@ class UrlCrawler implements ShouldQueue
             while ($this->getPagingElementOfWebsite($currentWebsite)->count()) {
                 $nextUrl = $this->getPagingElementOfWebsite($currentWebsite)->first()->attr('href');
                 $currentWebsite = $this->browseToWebsite(Helper::generateAbsoluteUrl($nextUrl, $source['url']));
-                $urls = array_merge($urls, $this->getUrlsFromWebsite($currentWebsite, $source['options']));
+                $urls = array_merge($urls, $this->getUrlsFromWebsite($currentWebsite, $source['overwriteAttributes']));
             }
         }
 
@@ -126,15 +126,15 @@ class UrlCrawler implements ShouldQueue
         return ChromeHeadless::url($url)->getDOMCrawler();
     }
 
-    private function getUrlsFromWebsite(Crawler $website, $options)
+    private function getUrlsFromWebsite(Crawler $website, $overwriteAttributes)
     {
         $urls = [];
         $absoluteUrl = $this->source->getSourceUrls()[0]['url'];
 
-        $website->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($options, $absoluteUrl, &$urls) {
+        $website->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($overwriteAttributes, $absoluteUrl, &$urls) {
             $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
-            $options = $options ?: [];
-            $urls[] = compact('url', 'options');
+            $overwriteAttributes = $overwriteAttributes ?: [];
+            $urls[] = compact('url', 'overwriteAttributes');
         });
 
         return $urls;

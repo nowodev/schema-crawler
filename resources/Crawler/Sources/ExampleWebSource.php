@@ -8,8 +8,8 @@ class ExampleWebSource extends WebSource
 {
     protected $sourceUrls = [
         [
-            'url' => 'https://www.wowcoolsource.com/products-1',
-            'options' => ['price' => 10], // price will be always 10 for schemas of this page
+            'url'                 => 'https://www.wowcoolsource.com/products-1',
+            'overwriteAttributes' => ['price' => 10], // price will be always 10 for schemas of this page
         ],
         [
             'url' => 'https://www.wowcoolsource.com/products-2',
@@ -19,10 +19,10 @@ class ExampleWebSource extends WebSource
     protected $cssSelectors = [
         'overview' => [
             'detailPageLink' => '.products a',
-            'nextPageLink' => '.pages a.next' // can be null if there is only one page
+            'nextPageLink'   => '.pages a.next' // can be null if there is only one page
         ],
-        'detail' => [
-            'name' => '.product .name',
+        'detail'   => [
+            'name'  => '.product .name',
             'price' => '.product .price'
         ],
     ];

@@ -34,7 +34,7 @@ abstract class Adapter
      *
      * @var array
      */
-    protected $overwrittenAttributes = [];
+    protected $overwriteAttributes = [];
 
     /**
      * Adapter constructor.
@@ -42,14 +42,14 @@ abstract class Adapter
      * @param RawData $rawData
      * @param array   $options
      * @param array   $allowedAttributes
-     * @param array   $overwrittenAttributes
+     * @param array   $overwriteAttributes
      */
-    public function __construct(RawData $rawData, array $options, array $allowedAttributes, array $overwrittenAttributes = [])
+    public function __construct(RawData $rawData, array $options, array $allowedAttributes, array $overwriteAttributes = [])
     {
         $this->rawData = $rawData;
         $this->options = $options;
         $this->allowedAttributes = $allowedAttributes;
-        $this->overwrittenAttributes = $overwrittenAttributes;
+        $this->overwriteAttributes = $overwriteAttributes;
         $this->addBailToValidationRules();
     }
 
@@ -68,8 +68,8 @@ abstract class Adapter
             return false;
         }
 
-        if (in_array($attribute, array_keys($this->overwrittenAttributes))) {
-            return $this->overwrittenAttributes[$attribute];
+        if (in_array($attribute, array_keys($this->overwriteAttributes))) {
+            return $this->overwriteAttributes[$attribute];
         }
 
         return $this->rawData->{$attribute};

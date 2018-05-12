@@ -58,43 +58,43 @@ class HelperTest extends TestCase
     {
         $urls = [
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
-                'options' => ['category' => 'history']
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
+                'overwriteAttributes' => ['category' => 'history']
             ],
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
-                'options' => ['category' => 'crime']
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
+                'overwriteAttributes' => ['category' => 'crime']
             ],
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
-                'options' => ['category' => 'crime']
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
+                'overwriteAttributes' => ['category' => 'crime']
             ],
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
-                'options' => ['children' => false]
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
+                'overwriteAttributes' => ['children' => false]
             ],
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
-                'options' => ['children' => false]
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
+                'overwriteAttributes' => ['children' => false]
             ],
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
-                'options' => []
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
+                'overwriteAttributes' => []
             ]
         ];
 
         $expected = [
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
-                'options' => ['category' => ['crime', 'history']]
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-1',
+                'overwriteAttributes' => ['category' => ['crime', 'history']]
             ],
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
-                'options' => ['category' => 'crime', 'children' => false]
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-2',
+                'overwriteAttributes' => ['category' => 'crime', 'children' => false]
             ],
             [
-                'url'     => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
-                'options' => ['children' => false]
+                'url'                 => 'http://www.coolbookstore.com/products/21342354/cool-book-3',
+                'overwriteAttributes' => ['children' => false]
             ]
         ];
 
@@ -102,20 +102,21 @@ class HelperTest extends TestCase
     }
 
     /** @test */
-    public function it_can_overwrite_an_array(){
+    public function it_can_overwrite_an_array()
+    {
         $newValues = [
             'category' => ['Nice Category']
         ];
 
         $array = [
-            'title' => 'A title',
-            'author' => 'A author',
+            'title'    => 'A title',
+            'author'   => 'A author',
             'category' => ['Some Category']
         ];
 
         $this->assertEquals([
-            'title' => 'A title',
-            'author' => 'A author',
+            'title'    => 'A title',
+            'author'   => 'A author',
             'category' => ['Nice Category']
         ], Helper::overwriteArray($newValues, $array));
     }

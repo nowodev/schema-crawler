@@ -33,7 +33,7 @@ class DetailCrawler implements ShouldQueue
      *
      * @var array
      */
-    protected $options = [];
+    protected $overwriteAttributes = [];
 
     /**
      * The crawler source instance.
@@ -67,14 +67,14 @@ class DetailCrawler implements ShouldQueue
      * Create a new job instance.
      *
      * @param string    $url
-     * @param array     $options
+     * @param array     $overwriteAttributes
      * @param WebSource $source
      * @internal param array $cssSelectors
      */
-    public function __construct(string $url, array $options, WebSource $source)
+    public function __construct(string $url, array $overwriteAttributes, WebSource $source)
     {
         $this->url = $url;
-        $this->options = $options;
+        $this->overwriteAttributes = $overwriteAttributes;
         $this->source = $source;
         $this->cssSelectors = $source->getCssSelectors()['detail'];
     }
@@ -90,13 +90,13 @@ class DetailCrawler implements ShouldQueue
     }
 
     /**
-     * Get the options.
+     * Get the overwriteAttributes.
      *
      * @return array
      */
     public function getOptions(): array
     {
-        return $this->options;
+        return $this->overwriteAttributes;
     }
 
     /**
@@ -173,7 +173,7 @@ class DetailCrawler implements ShouldQueue
     public function createAdapterFromData(RawData $data)
     {
         $adapterClass = $this->source->getAdapterClass();
-        return new $adapterClass($data, $this->source->getAdapterOptions(), config('schema-crawler.attributes_to_crawl'), $this->options);
+        return new $adapterClass($data, $this->source->getAdapterOptions(), config('schema-crawler.attributes_to_crawl'), $this->overwriteAttributes);
     }
 
     /**
