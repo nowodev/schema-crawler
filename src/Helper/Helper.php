@@ -30,10 +30,10 @@ class Helper
     /**
      * Trim a string.
      *
-     * @param String $input
+     * @param $input
      * @return null|string|string[]
      */
-    public static function normalize(String $input)
+    public static function normalize($input)
     {
         return preg_replace('/[\s\s]+/u', ' ', trim(html_entity_decode($input), ".:=- \n\t\r\0\x0B\xC2\xA0"));
     }
