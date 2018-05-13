@@ -79,7 +79,7 @@ class FeedSourceMakeCommand extends GeneratorCommand
             return "'$e' => ''";
         }, array_keys(Config::get('schema-crawler.attributes_to_crawl')));
 
-        $class = str_replace('\'DummyAttributes\'', "\t\t" . implode(",\n\t\t", $attributes) . "\n\t", $class);
+        $class = str_replace('\'DummyAttributes\'', implode(",\n\t\t", $attributes), $class);
         return $class;
     }
 
