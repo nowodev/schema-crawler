@@ -5,12 +5,12 @@ namespace DummyNamespace;
 class DummyClass extends DummyParentWebSource
 {
     /**
-     * The urls of the pages that contain links to the schemas.
+     * The urls of the feeds that contain the schema information.
      * Options for each url can be defined that will overwrite the attributes of the crawled schemas.
      *
      * @var array
      */
-    protected $sourceUrls = [
+    protected $feedUrls = [
         [
             'url'                 => '',
             'schemaNode'          => '',
@@ -27,11 +27,11 @@ class DummyClass extends DummyParentWebSource
     protected $adapterOptions = [];
 
     /**
-     * The CSS selectors of the paging and the attributes of the schema.
+     * The path selectors of the attributes of the schema.
      *
      * @var array
      */
-    protected $cssSelectors = [
+    protected $pathSelectors = [
         'url' => '',
         'DummyAttributes'
     ];
