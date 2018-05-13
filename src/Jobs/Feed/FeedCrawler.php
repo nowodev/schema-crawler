@@ -121,7 +121,7 @@ class FeedCrawler implements ShouldQueue
         $nodeCrawler = new Crawler(str_replace(['<![CDATA[', ']]>'], '', $node));
         $url = $this->source->getUrl($nodeCrawler);
 
-        $this->urls[] = $url;
+        $this->urls[] = compact('url', 'overwriteAttributes');
 
         dispatch(new FeedDetailCrawler($url, $overwriteAttributes, $this->source, $nodeCrawler));
     }
