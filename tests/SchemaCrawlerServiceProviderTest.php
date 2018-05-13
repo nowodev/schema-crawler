@@ -22,6 +22,7 @@ class SchemaCrawlerServiceProviderTest extends TestCase
             'crawler:test',
             'make:adapter',
             'make:websource',
+            'make:feedsource',
             'make:sourcetest',
         ];
 
