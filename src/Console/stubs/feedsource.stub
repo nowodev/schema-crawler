@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-class DummyClass extends DummyParentWebSource
+class DummyClass extends DummyParentFeedSource
 {
     /**
      * The urls of the feeds that contain the schema information.
