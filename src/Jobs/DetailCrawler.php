@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Helper\Helper;
+use SchemaCrawler\Sources\Source;
 use SchemaCrawler\Sources\WebSource;
 use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
@@ -52,11 +53,11 @@ abstract class DetailCrawler implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param array     $overwriteAttributes
-     * @param WebSource $source
+     * @param array  $overwriteAttributes
+     * @param Source $source
      * @internal param array $cssSelectors
      */
-    public function __construct(array $overwriteAttributes, WebSource $source)
+    public function __construct(array $overwriteAttributes, Source $source)
     {
         $this->overwriteAttributes = $overwriteAttributes;
         $this->source = $source;
