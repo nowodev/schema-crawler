@@ -38,11 +38,11 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
     protected $pathSelectors = [];
 
     /**
-     * The DOM of the crawled website.
+     * The node of the XML.
      *
      * @var Crawler
      */
-    protected $websiteDOM = null;
+    protected $node = null;
 
     /**
      * The number of times the job may be attempted.
@@ -64,6 +64,7 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
     {
         parent::__construct($overwriteAttributes, $source);
         $this->pathSelectors = $source->getPathSelectors();
+        $this->node = $node;
         $this->url = $url;
     }
 
