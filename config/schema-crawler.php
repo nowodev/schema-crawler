@@ -75,6 +75,11 @@ return [
             'namespace'    => '\App\Crawler\Sources',
             'tests_namespace' => '\Tests\Feature\Crawler\Sources'
         ],
+        'feedsource' => [
+            'parent_class' => \SchemaCrawler\Sources\FeedSource::class,
+            'namespace'    => '\App\Crawler\Sources',
+            'tests_namespace' => '\Tests\Feature\Crawler\Sources'
+        ],
         'adapter'   => [
             'parent_class' => \SchemaCrawler\Adapters\Adapter::class,
             'namespace'    => '\App\Crawler\Adapters'
