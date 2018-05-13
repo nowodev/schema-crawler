@@ -86,7 +86,9 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
         $data = new RawData($this->url, $this->source->getId());
 
         foreach ($this->pathSelectors as $attribute => $pathSelector) {
-            $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($node);
+            if ($attribute !== 'url') {
+                $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($node);
+            }
         }
 
         return $data;
