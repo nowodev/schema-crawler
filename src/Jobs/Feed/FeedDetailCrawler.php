@@ -57,10 +57,10 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      * @param string     $url
      * @param array      $overwriteAttributes
      * @param FeedSource $source
-     * @param Crawler    $node
+     * @param            $node
      * @internal param array $cssSelectors
      */
-    public function __construct(string $url, array $overwriteAttributes, FeedSource $source, Crawler $node)
+    public function __construct(string $url, array $overwriteAttributes, FeedSource $source, $node)
     {
         parent::__construct($overwriteAttributes, $source);
         $this->pathSelectors = $source->getPathSelectors();
@@ -76,7 +76,7 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->rawData = $this->getDataFromNode($this->node);
+        $this->rawData = $this->getDataFromNode(new Crawler(str_replace(['<![CDATA[', ']]>'], '', $this->node)));
 
         parent::handle();
     }

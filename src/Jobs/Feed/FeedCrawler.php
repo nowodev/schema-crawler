@@ -123,7 +123,7 @@ class FeedCrawler implements ShouldQueue
 
         $this->urls[] = compact('url', 'overwriteAttributes');
 
-        dispatch(new FeedDetailCrawler($url, $overwriteAttributes, $this->source, $nodeCrawler));
+        dispatch(new FeedDetailCrawler($url, $overwriteAttributes, $this->source, $node));
     }
 
     private function getXmlStream(string $filePath)
