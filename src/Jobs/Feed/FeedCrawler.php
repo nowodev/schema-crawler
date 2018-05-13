@@ -2,6 +2,7 @@
 
 namespace SchemaCrawler\Jobs\Web;
 
+use Prewk\XmlStringStreamer;
 use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Sources\FeedSource;
 use SchemaCrawler\Sources\WebSource;
@@ -104,6 +105,8 @@ class FeedCrawler implements ShouldQueue
 
         $zip = new Process(['gzip', '-dk', $filePath . '.gz']);
 
+        $zip->run();
+
         if (!$zip->isSuccessful()) {
             throw new ProcessFailedException($zip);
         }
@@ -121,5 +124,12 @@ class FeedCrawler implements ShouldQueue
         $this->urls[] = $url;
 
         dispatch(new FeedDetailCrawler($url, $overwriteAttributes, $this->source, $nodeCrawler));
+    }
+
+    private function getXmlStream(string $filePath)
+    {
+        return XmlStringStreamer::createStringWalkerParser($filePath, [
+            'expectGT' => true
+        ]);
     }
 }
