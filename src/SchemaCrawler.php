@@ -6,7 +6,6 @@ namespace SchemaCrawler;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use SchemaCrawler\Jobs\UrlCrawler;
 
 class SchemaCrawler
 {
@@ -60,7 +59,7 @@ class SchemaCrawler
     {
         foreach ($this->sourceClass::shouldBeCrawled()->get() as $source) {
             $sourceCrawler = $source->getCrawlerClassName();
-            dispatch(new UrlCrawler(new $sourceCrawler($source->id)));
+            (new $sourceCrawler($source->id))->run();
         }
     }
 
@@ -74,6 +73,6 @@ class SchemaCrawler
         $source = $source instanceof Model ? $source : $this->sourceClass::where((new $this->sourceClass())->getRouteKeyName(), $source)
             ->firstOrFail();
         $sourceCrawler = $source->getCrawlerClassName();
-        dispatch(new UrlCrawler(new $sourceCrawler($source->id)));
+        (new $sourceCrawler($source->id))->run();
     }
 }

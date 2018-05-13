@@ -5,7 +5,7 @@ namespace SchemaCrawler\Test;
 
 
 use Illuminate\Support\Facades\Queue;
-use SchemaCrawler\Jobs\UrlCrawler;
+use SchemaCrawler\Jobs\Web\UrlCrawler;
 use SchemaCrawler\SchemaCrawler;
 use SchemaCrawler\Test\Support\TestModels\Bookstore;
 

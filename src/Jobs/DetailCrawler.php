@@ -17,16 +17,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Symfony\Component\DomCrawler\Crawler;
 
-class DetailCrawler implements ShouldQueue
+abstract class DetailCrawler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    /**
-     * The url that should be crawled.
-     *
-     * @var string
-     */
-    protected $url = null;
 
     /**
      * Attributes that should be overwritten.
@@ -43,18 +36,11 @@ class DetailCrawler implements ShouldQueue
     protected $source = null;
 
     /**
-     * The CSS selectors for the attributes of the schema.
+     * The raw data of the crawled schema.
      *
-     * @var array
+     * @var RawData
      */
-    protected $cssSelectors = [];
-
-    /**
-     * The DOM of the crawled website.
-     *
-     * @var Crawler
-     */
-    protected $websiteDOM = null;
+    protected $rawData = null;
 
     /**
      * The number of times the job may be attempted.
@@ -66,27 +52,14 @@ class DetailCrawler implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param string    $url
      * @param array     $overwriteAttributes
      * @param WebSource $source
      * @internal param array $cssSelectors
      */
-    public function __construct(string $url, array $overwriteAttributes, WebSource $source)
+    public function __construct(array $overwriteAttributes, WebSource $source)
     {
-        $this->url = $url;
         $this->overwriteAttributes = $overwriteAttributes;
         $this->source = $source;
-        $this->cssSelectors = $source->getCssSelectors()['detail'];
-    }
-
-    /**
-     * Get the url.
-     *
-     * @return string
-     */
-    public function getUrl(): string
-    {
-        return $this->url;
     }
 
     /**
@@ -94,7 +67,7 @@ class DetailCrawler implements ShouldQueue
      *
      * @return array
      */
-    public function getOptions(): array
+    public function getOverwriteAttributes(): array
     {
         return $this->overwriteAttributes;
     }
@@ -107,13 +80,9 @@ class DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $website = $this->browseToWebsite($this->url);
+        $this->rawData->validate();
 
-        $rawData = $this->getDataFromWebsite($website);
-
-        $rawData->validate();
-
-        $adapter = $this->createAdapterFromData($rawData);
+        $adapter = $this->createAdapterFromData($this->rawData);
 
         $data = $adapter->validateAndGetData();
 
@@ -146,22 +115,6 @@ class DetailCrawler implements ShouldQueue
                 'failed_at'        => Carbon::now()
             ]);
         }
-    }
-
-    private function browseToWebsite($url)
-    {
-        return ChromeHeadless::url($url)->getDOMCrawler();
-    }
-
-    private function getDataFromWebsite(Crawler $website)
-    {
-        $data = new RawData($this->url, $this->source->getId());
-
-        foreach ($this->cssSelectors as $attribute => $cssSelector) {
-            $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($website);
-        }
-
-        return $data;
     }
 
     /**

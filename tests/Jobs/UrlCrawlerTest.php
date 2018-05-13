@@ -5,8 +5,8 @@ namespace SchemaCrawler\Test\Jobs;
 
 
 use Illuminate\Support\Facades\Queue;
-use SchemaCrawler\Jobs\DetailCrawler;
-use SchemaCrawler\Jobs\UrlCrawler;
+use SchemaCrawler\Jobs\Web\UrlCrawler;
+use SchemaCrawler\Jobs\Web\WebDetailCrawler;
 use SchemaCrawler\Test\Support\TestSources\CoolBooks;
 use SchemaCrawler\Test\TestCase;
 
@@ -38,8 +38,8 @@ class UrlCrawlerTest extends TestCase
         (new UrlCrawler(new CoolBooks(null)))->runDetailCrawlers($urls);
 
         foreach ($urls as $url) {
-            Queue::assertPushed(DetailCrawler::class, function (DetailCrawler $job) use ($url) {
-                return $job->getUrl() === $url['url'] AND $job->getOptions() === $url['overwriteAttributes'];
+            Queue::assertPushed(WebDetailCrawler::class, function (WebDetailCrawler $job) use ($url) {
+                return $job->getUrl() === $url['url'] AND $job->getOverwriteAttributes() === $url['overwriteAttributes'];
             });
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace SchemaCrawler\Jobs;
+namespace SchemaCrawler\Jobs\Web;
 
 use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Sources\WebSource;
@@ -82,7 +82,7 @@ class UrlCrawler implements ShouldQueue
     public function runDetailCrawlers(array $urls)
     {
         foreach ($urls as $detailPage) {
-            dispatch(new DetailCrawler($detailPage['url'], $detailPage['overwriteAttributes'], $this->source));
+            dispatch(new WebDetailCrawler($detailPage['url'], $detailPage['overwriteAttributes'], $this->source));
         }
     }
 
