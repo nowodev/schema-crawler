@@ -29,6 +29,10 @@ class SchemaCrawlerServiceProvider extends ServiceProvider
         */
 
         $this->loadMigrationsFrom(__DIR__ . '/../resources/database/migrations');
+
+        if (!file_exists(storage_path('schema-crawler/temp')) && !is_dir(storage_path('schema-crawler/temp'))) {
+            mkdir(storage_path('schema-crawler/temp'));
+        }
     }
 
     /**

@@ -92,7 +92,7 @@ class FeedCrawler implements ShouldQueue
         $filePath = storage_path('schema-crawler/temp/') . md5(time()) . '.xml';
 
         try {
-            file_put_contents($filePath, file_get_contents($url) . ($extract ? '.gz' : ''));
+            file_put_contents($filePath . ($extract ? '.gz' : ''), file_get_contents($url));
         } catch (\Exception $e) {
             $filePath = null;
         }
