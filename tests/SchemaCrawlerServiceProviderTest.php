@@ -24,6 +24,7 @@ class SchemaCrawlerServiceProviderTest extends TestCase
             'make:websource',
             'make:feedsource',
             'make:sourcetest',
+            'make:feedtest',
         ];
 
         $commands = Artisan::all();

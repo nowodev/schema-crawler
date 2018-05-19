@@ -7,6 +7,7 @@ use SchemaCrawler\Console\AdapterMakeCommand;
 use SchemaCrawler\Console\CrawlerStartCommand;
 use SchemaCrawler\Console\CrawlerTestCommand;
 use SchemaCrawler\Console\FeedSourceMakeCommand;
+use SchemaCrawler\Console\FeedSourceTestMakeCommand;
 use SchemaCrawler\Console\WebSourceMakeCommand;
 use SchemaCrawler\Console\WebSourceTestMakeCommand;
 use SchemaCrawler\Exceptions\Handler;
@@ -49,6 +50,7 @@ class SchemaCrawlerServiceProvider extends ServiceProvider
             WebSourceMakeCommand::class,
             FeedSourceMakeCommand::class,
             WebSourceTestMakeCommand::class,
+            FeedSourceTestMakeCommand::class
         ]);
     }
 }
