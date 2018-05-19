@@ -63,7 +63,7 @@ class SourceGenerateCommand extends Command
         $sourceModel->save();
 
         $options = [
-            'name' => $sourceModel->getCrawlerClassName()
+            'name' => array_slice(explode('/', $sourceModel->getCrawlerClassName()), -1)[0]
         ];
 
         if ($this->confirm("Does this $sourceModelName have a feed?")) {
