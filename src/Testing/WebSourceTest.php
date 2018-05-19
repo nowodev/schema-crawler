@@ -96,7 +96,8 @@ abstract class WebSourceTest extends TestCase
             return $this->assertTrue(true);
         }
 
-        $invalidSourceUrl = str_replace_last('/', '/ooops123', $this->sourceUrls[0]['url']);
+        $invalidSourceUrl = $this->createInvalidUrl($this->sourceUrls[0]['url']);
+
         $sourcePageDOM = ChromeHeadless::url($invalidSourceUrl)->getDOMCrawler();
         $this->assertEquals(0, $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])
             ->count(), "Found schema urls on an invalid source. Define a more precise page link css selector to avoid this.\n[Tested URL: $invalidSourceUrl]");
@@ -112,7 +113,8 @@ abstract class WebSourceTest extends TestCase
             $detailPageUrl = $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])->attr('href');
         }
 
-        $invalidDetailPageUrl = str_replace_last('/', '/ooops123', $detailPageUrl);
+        $invalidDetailPageUrl = $this->createInvalidUrl($detailPageUrl);
+
         $detailPageDOM = ChromeHeadless::url(Helper::generateAbsoluteUrl($invalidDetailPageUrl, $this->sourceUrls[0]['url']))
             ->getDOMCrawler();
 
@@ -120,5 +122,12 @@ abstract class WebSourceTest extends TestCase
             $this->assertEmpty($this->websource->{'get' . ucfirst(camel_case($attribute))}($detailPageDOM),
                 "Found a $attribute element on an invalid page. Define a more precise $attribute css selector to avoid this.\n[Tested URL: $invalidDetailPageUrl]");
         }
+    }
+
+    protected function createInvalidUrl($url)
+    {
+        $invalidUrl = explode('/' . $url);
+        $invalidUrl[count($invalidUrl) - 1] = str_rot13($invalidUrl[count($invalidUrl) - 1]) . 'ooops123';
+        return implode('', $invalidUrl);
     }
 }
