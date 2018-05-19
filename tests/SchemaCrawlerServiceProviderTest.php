@@ -23,6 +23,7 @@ class SchemaCrawlerServiceProviderTest extends TestCase
             'make:adapter',
             'make:source',
             'make:sourcetest',
+            'source:generate'
         ];
 
         $commands = Artisan::all();
