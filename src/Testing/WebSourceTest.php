@@ -7,7 +7,7 @@ use ChromeHeadless\ChromeHeadless;
 use Illuminate\Foundation\Testing\TestCase;
 use SchemaCrawler\Helper\Helper;
 
-abstract class SourceTest extends TestCase
+abstract class WebSourceTest extends TestCase
 {
     /**
      * Class name of the crawler source

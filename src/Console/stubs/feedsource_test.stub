@@ -4,7 +4,7 @@ namespace DummyNamespace;
 
 use SchemaCrawler\Testing\WebSourceTest;
 
-class DummyClass extends WebSourceTest
+class DummyClass extends FeedSourceTest
 {
     use \Tests\CreatesApplication;
 }
