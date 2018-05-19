@@ -2,6 +2,7 @@
 
 namespace SchemaCrawler\Jobs\Web;
 
+use SchemaCrawler\Events\UrlsCrawled;
 use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Sources\Source;
 use SchemaCrawler\Sources\WebSource;
