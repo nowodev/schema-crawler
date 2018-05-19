@@ -51,7 +51,7 @@ class SourceGenerateCommand extends Command
      */
     public function handle()
     {
-        $sourceModel = new $this->sourceModel();
+        $sourceModel = new $this->sourceModelClass();
         foreach ($this->sourceAttributes as $attribute) {
             $value = trim($this->ask("What should be the $attribute of the source? Leave blank for the default value."));
             if (!is_null($value)) {
