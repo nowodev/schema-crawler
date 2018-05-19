@@ -128,6 +128,6 @@ abstract class WebSourceTest extends TestCase
     {
         $invalidUrl = explode('/', $url);
         $invalidUrl[count($invalidUrl) - 1] = str_rot13($invalidUrl[count($invalidUrl) - 1]) . 'ooops123';
-        return implode('', $invalidUrl);
+        return implode('/', $invalidUrl);
     }
 }
