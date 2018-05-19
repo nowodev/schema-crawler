@@ -1,6 +1,6 @@
 <?php
 
-namespace SchemaCrawler\Jobs\Web;
+namespace SchemaCrawler\Jobs;
 
 use SchemaCrawler\Events\UrlsCrawled;
 use SchemaCrawler\Sources\Source;

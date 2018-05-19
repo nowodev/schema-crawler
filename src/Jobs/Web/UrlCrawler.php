@@ -3,6 +3,7 @@
 namespace SchemaCrawler\Jobs\Web;
 
 use SchemaCrawler\Helper\Helper;
+use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\WebSource;
 use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
