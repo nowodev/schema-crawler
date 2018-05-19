@@ -37,7 +37,7 @@ class SourceTestMakeCommand extends GeneratorCommand
      */
     public function handle()
     {
-        if (!$this->option('feed')) {
+        if ($this->option('feed')) {
             $this->type = 'FeedSourceTest';
         }
 
@@ -62,7 +62,7 @@ class SourceTestMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return Config::get('schema-crawler.generator' . strtolower(str_replace('Test', '', $this->type)) . 'tests_namespace');
+        return Config::get('schema-crawler.generator.' . strtolower(str_replace('Test', '', $this->type)) . '.tests_namespace');
     }
 
     /**

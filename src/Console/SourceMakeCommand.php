@@ -36,7 +36,7 @@ class SourceMakeCommand extends GeneratorCommand
      */
     public function handle()
     {
-        if (!$this->option('feed')) {
+        if ($this->option('feed')) {
             $this->type = 'FeedSource';
         }
 
@@ -77,7 +77,7 @@ class SourceMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $class = parent::buildClass($name);
-        $class = str_replace('DummyParent' . $this->type, '\\' . Config::get('schema-crawler.generator.' . strtolower($this->type) . ' .parent_class'),
+        $class = str_replace('DummyParent' . $this->type, '\\' . Config::get('schema-crawler.generator.' . strtolower($this->type) . '.parent_class'),
             $class);
 
         $attributes = array_map(function ($e) {
