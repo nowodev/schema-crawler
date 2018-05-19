@@ -8,14 +8,14 @@ use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\Console\Input\InputOption;
 
-class WebSourceMakeCommand extends GeneratorCommand
+class SourceMakeCommand extends GeneratorCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'make:websource';
+    protected $name = 'make:source';
     /**
      * The console command description.
      *
@@ -36,6 +36,10 @@ class WebSourceMakeCommand extends GeneratorCommand
      */
     public function handle()
     {
+        if (!$this->option('feed')) {
+            $this->type = 'FeedSource';
+        }
+
         parent::handle();
 
         if (!$this->option('no-test')) {
@@ -50,7 +54,7 @@ class WebSourceMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__ . '/stubs/websource.stub';
+        return __DIR__ . '/stubs/' . strtolower($this->type) . '.stub';
     }
 
     /**
@@ -61,7 +65,7 @@ class WebSourceMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return Config::get('schema-crawler.generator.websource.namespace');
+        return Config::get('schema-crawler.generator.' . strtolower($this->type) . '.namespace');
     }
 
     /**
@@ -73,13 +77,19 @@ class WebSourceMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $class = parent::buildClass($name);
-        $class = str_replace('DummyParentWebSource', '\\' . Config::get('schema-crawler.generator.websource.parent_class'), $class);
+        $class = str_replace('DummyParent' . $this->type, '\\' . Config::get('schema-crawler.generator.' . strtolower($this->type) . ' .parent_class'),
+            $class);
 
         $attributes = array_map(function ($e) {
             return "'$e' => ''";
         }, array_keys(Config::get('schema-crawler.attributes_to_crawl')));
 
-        $class = str_replace('\'DummyAttributes\'', "\n\t\t\t" . implode(",\n\t\t\t", $attributes) . "\n\t\t", $class);
+        if ($this->type == 'FeedSource') {
+            $class = str_replace('\'DummyAttributes\'', implode(",\n\t\t", $attributes), $class);
+        } else {
+            $class = str_replace('\'DummyAttributes\'', "\n\t\t\t" . implode(",\n\t\t\t", $attributes) . "\n\t\t", $class);
+        }
+
         return $class;
     }
 
@@ -90,9 +100,15 @@ class WebSourceMakeCommand extends GeneratorCommand
      */
     protected function createTest()
     {
-        $this->call('make:sourcetest', [
+        $options = [
             'name' => $this->argument('name') . 'Test'
-        ]);
+        ];
+
+        if($this->type == 'FeedSource'){
+            $options[] = '--feed';
+        }
+
+        $this->call('make:sourcetest', $options);
     }
 
 
@@ -104,7 +120,8 @@ class WebSourceMakeCommand extends GeneratorCommand
     protected function getOptions()
     {
         return [
-            ['no-test', '-t', InputOption::VALUE_NONE, 'Do not create a test for the web source.'],
+            ['feed', '-f', InputOption::VALUE_NONE, 'Create a feed source.'],
+            ['no-test', '-t', InputOption::VALUE_NONE, 'Do not create a test for the source.'],
         ];
     }
 }

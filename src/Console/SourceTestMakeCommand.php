@@ -5,29 +5,44 @@ namespace SchemaCrawler\Console;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
 
-class FeedSourceTestMakeCommand extends GeneratorCommand
+class SourceTestMakeCommand extends GeneratorCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'make:feedtest';
+    protected $name = 'make:sourcetest';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a crawler feed test.';
+    protected $description = 'Create a crawler source test.';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Test';
+    protected $type = 'WebSourceTest';
+
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        if (!$this->option('feed')) {
+            $this->type = 'FeedSourceTest';
+        }
+
+        parent::handle();
+    }
 
     /**
      * Get the stub file for the generator.
@@ -36,7 +51,7 @@ class FeedSourceTestMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__ . '/stubs/feedsource_test.stub';
+        return __DIR__ . '/stubs/' . strtolower($this->type) . '.stub';
     }
 
     /**
@@ -47,7 +62,7 @@ class FeedSourceTestMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return Config::get('schema-crawler.generator.feedsource.tests_namespace');
+        return Config::get('schema-crawler.generator' . strtolower(str_replace('Test', '', $this->type)) . 'tests_namespace');
     }
 
     /**
@@ -71,5 +86,17 @@ class FeedSourceTestMakeCommand extends GeneratorCommand
     protected function rootNamespace()
     {
         return 'Tests';
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['feed', '-f', InputOption::VALUE_NONE, 'Create a feed source test.'],
+        ];
     }
 }
