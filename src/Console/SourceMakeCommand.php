@@ -104,8 +104,8 @@ class SourceMakeCommand extends GeneratorCommand
             'name' => $this->argument('name') . 'Test'
         ];
 
-        if($this->type == 'FeedSource'){
-            $options[] = '--feed';
+        if ($this->type == 'FeedSource') {
+            $options['--feed'] = true;
         }
 
         $this->call('make:sourcetest', $options);
