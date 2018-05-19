@@ -126,7 +126,7 @@ abstract class WebSourceTest extends TestCase
 
     protected function createInvalidUrl($url)
     {
-        $invalidUrl = explode('/' . $url);
+        $invalidUrl = explode('/', $url);
         $invalidUrl[count($invalidUrl) - 1] = str_rot13($invalidUrl[count($invalidUrl) - 1]) . 'ooops123';
         return implode('', $invalidUrl);
     }
