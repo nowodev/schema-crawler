@@ -21,14 +21,14 @@ class SourceGenerateCommand extends Command
      */
     protected $description = 'Generate a new source.';
 
-    protected $sourceModelClass = null;
-
     protected $sourceAttributes = [];
 
     protected $ignoreFields = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
+
+    protected $source = null;
 
     /**
      * Create a new command instance.
@@ -38,9 +38,13 @@ class SourceGenerateCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->sourceModelClass = config('schema-crawler.source_model');
+
+        $sourceModelClass = config('schema-crawler.source_model');
+
+        $this->source = new $sourceModelClass();
+
         $this->sourceAttributes = array_values(
-            array_diff(Schema::getColumnListing((new $this->sourceModelClass())->getTable()), $this->ignoreFields)
+            array_diff(Schema::getColumnListing((new $sourceModelClass())->getTable()), $this->ignoreFields)
         );
     }
 
@@ -52,18 +56,20 @@ class SourceGenerateCommand extends Command
      */
     public function handle()
     {
-        $sourceModel = new $this->sourceModelClass();
-        $sourceModelName = strtolower((new \ReflectionClass($sourceModel))->getShortName());
+
+        $sourceModelName = strtolower((new \ReflectionClass($this->source))->getShortName());
+
         foreach ($this->sourceAttributes as $attribute) {
             $value = trim($this->ask("What should be the $attribute field of the $sourceModelName? Leave blank for the default value."));
-            if (!is_null($value) AND $value != '') {
-                $sourceModel->{$attribute} = $value;
+            if (! is_null($value) AND $value != '') {
+                $this->source->{$attribute} = $value;
             }
         }
-        $sourceModel->save();
+
+        $this->source->save();
 
         $options = [
-            'name' => array_slice(explode("\\", $sourceModel->getCrawlerClassName()), -1)[0]
+            'name' => array_slice(explode("\\", $this->source->getCrawlerClassName()), -1)[0],
         ];
 
         if ($this->confirm("Does this $sourceModelName have a feed?")) {
