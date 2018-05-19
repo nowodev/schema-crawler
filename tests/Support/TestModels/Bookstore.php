@@ -28,15 +28,4 @@ class Bookstore extends Model
     {
         return $query->where('active', true);
     }
-
-    /**
-     * This function will be triggered after the urls of a source have been crawled.
-     *
-     * @param array $urls
-     * @return mixed
-     */
-    public function urlsCrawledEvent(array $urls)
-    {
-        return $urls;
-    }
 }

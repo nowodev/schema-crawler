@@ -3,7 +3,6 @@
 namespace SchemaCrawler\Adapters;
 
 use SchemaCrawler\Containers\RawData;
-use Illuminate\Validation\ValidationException;
 use SchemaCrawler\Exceptions\InvalidSchema;
 
 abstract class Adapter

@@ -2,16 +2,10 @@
 
 namespace SchemaCrawler\Jobs\Web;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Exceptions\InvalidSchema;
-use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Jobs\DetailCrawler;
 use SchemaCrawler\Sources\FeedSource;
-use SchemaCrawler\Sources\WebSource;
-use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

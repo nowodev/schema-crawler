@@ -3,16 +3,13 @@
 namespace SchemaCrawler\Jobs\Web;
 
 use SchemaCrawler\Events\UrlsCrawled;
-use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Sources\Source;
 use SchemaCrawler\Sources\WebSource;
-use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Symfony\Component\DomCrawler\Crawler;
 
 abstract class OverviewCrawler implements ShouldQueue
 {

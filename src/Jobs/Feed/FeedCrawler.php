@@ -3,10 +3,7 @@
 namespace SchemaCrawler\Jobs\Web;
 
 use Prewk\XmlStringStreamer;
-use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Sources\FeedSource;
-use SchemaCrawler\Sources\WebSource;
-use ChromeHeadless\ChromeHeadless;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
