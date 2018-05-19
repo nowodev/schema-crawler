@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-use SchemaCrawler\Testing\WebSourceTest;
+use SchemaCrawler\Testing\FeedSourceTest;
 
 class DummyClass extends FeedSourceTest
 {
