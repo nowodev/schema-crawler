@@ -48,12 +48,14 @@ class SourceGenerateCommand extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @throws \ReflectionException
      */
     public function handle()
     {
         $sourceModel = new $this->sourceModelClass();
+        $sourceModelName = strtolower((new \ReflectionClass($sourceModel))->getShortName());
         foreach ($this->sourceAttributes as $attribute) {
-            $value = trim($this->ask("What should be the $attribute of the source? Leave blank for the default value."));
+            $value = trim($this->ask("What should be the $attribute of the $sourceModelName? Leave blank for the default value."));
             if (!is_null($value)) {
                 $sourceModel->{$attribute} = $value;
             }
@@ -64,7 +66,7 @@ class SourceGenerateCommand extends Command
             'name' => $sourceModel->getCrawlerClassName()
         ];
 
-        if ($this->confirm('Does this source have a feed? (Default: no)')) {
+        if ($this->confirm("Does this $sourceModelName have a feed? (Default: no)")) {
             $options['--feed'] = true;
         }
 
