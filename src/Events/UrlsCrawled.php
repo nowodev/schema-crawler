@@ -4,6 +4,7 @@
 namespace SchemaCrawler\Events;
 
 
+use Illuminate\Database\Eloquent\Model;
 use SchemaCrawler\Models\Source;
 
 /**
@@ -30,10 +31,10 @@ class UrlsCrawled
     /**
      * UrlsCrawled constructor.
      *
-     * @param array  $urls Urls that have been crawled.
-     * @param Source $source Source model.
+     * @param array $urls Urls that have been crawled.
+     * @param Model $source Source model.
      */
-    public function __construct(array $urls, Source $source)
+    public function __construct(array $urls, Model $source)
     {
         $this->urls = $urls;
         $this->source = $source;
