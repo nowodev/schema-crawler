@@ -16,16 +16,9 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class FeedCrawler implements ShouldQueue
+class FeedCrawler extends OverviewCrawler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    /**
-     * The crawler source instance.
-     *
-     * @var FeedSource
-     */
-    public $source;
 
     /**
      * The path selectors for the attributes.
@@ -35,27 +28,13 @@ class FeedCrawler implements ShouldQueue
     protected $pathSelectors = [];
 
     /**
-     * The urls that have been processed.
-     *
-     * @var array
-     */
-    protected $urls = [];
-
-    /**
-     * The number of times the job may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 2;
-
-    /**
      * Create a new job instance.
      *
      * @param FeedSource $source
      */
     public function __construct(FeedSource $source)
     {
-        $this->source = $source;
+        parent::__construct($source);
         $this->pathSelectors = $source->getPathSelectors();
     }
 
@@ -85,8 +64,7 @@ class FeedCrawler implements ShouldQueue
             unlink($filePath);
         }
 
-        $sourceModel = $this->source->getSourceModelClass();
-        $sourceModel::findOrFail($this->source->getId())->urlsCrawledEvent($this->urls);
+        $this->fireUrlEvent($this->urls);
     }
 
     private function download(string $url, bool $extract = false)

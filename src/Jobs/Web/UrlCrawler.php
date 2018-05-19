@@ -12,16 +12,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Symfony\Component\DomCrawler\Crawler;
 
-class UrlCrawler implements ShouldQueue
+class UrlCrawler extends OverviewCrawler implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    /**
-     * The crawler source instance.
-     *
-     * @var WebSource
-     */
-    public $source;
 
     /**
      * The CSS selectors for the paging.
@@ -30,20 +23,6 @@ class UrlCrawler implements ShouldQueue
      */
     protected $cssSelectors = [];
 
-    /**
-     * The urls that have been crawled from the paging overview.
-     *
-     * @var array
-     */
-    protected $urls = [];
-
-
-    /**
-     * The number of times the job may be attempted.
-     *
-     * @var int
-     */
-    public $tries = 2;
 
     /**
      * Create a new job instance.
@@ -52,7 +31,7 @@ class UrlCrawler implements ShouldQueue
      */
     public function __construct(WebSource $source)
     {
-        $this->source = $source;
+        parent::__construct($source);
         $this->cssSelectors = $source->getCssSelectors()['overview'];
     }
 
@@ -67,9 +46,7 @@ class UrlCrawler implements ShouldQueue
 
         $urls = Helper::mergeDuplicateUrls($urls);
 
-        $sourceModel = $this->source->getSourceModelClass();
-
-        $sourceModel::findOrFail($this->source->getId())->urlsCrawledEvent($urls);
+        $this->fireUrlEvent($urls);
 
         $this->runDetailCrawlers($urls);
     }
