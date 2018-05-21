@@ -41,6 +41,13 @@ abstract class DetailCrawler implements ShouldQueue
     protected $rawData = null;
 
     /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 1200;
+
+    /**
      * The number of times the job may be attempted.
      *
      * @var int
