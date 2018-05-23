@@ -71,7 +71,7 @@ abstract class WebSource extends Source
      */
     public function __call($name, $arguments)
     {
-        $attribute = camel_case(str_replace('get', '', $name));
+        $attribute = snake_case(str_replace('get', '', $name));
 
         if (!in_array($attribute, $this->allowedAttributes)) {
             // attribute does not exist
