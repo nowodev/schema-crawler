@@ -31,24 +31,6 @@ class SourceGenerateCommand extends Command
     protected $source = null;
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $sourceModelClass = config('schema-crawler.source_model');
-
-        $this->source = new $sourceModelClass();
-
-        $this->sourceAttributes = array_values(
-            array_diff(Schema::getColumnListing((new $sourceModelClass())->getTable()), $this->ignoreFields)
-        );
-    }
-
-    /**
      * Execute the console command.
      *
      * @return mixed
@@ -56,12 +38,19 @@ class SourceGenerateCommand extends Command
      */
     public function handle()
     {
+        $sourceModelClass = config('schema-crawler.source_model');
+
+        $this->source = new $sourceModelClass();
+
+        $this->sourceAttributes = array_values(
+            array_diff(Schema::getColumnListing((new $sourceModelClass())->getTable()), $this->ignoreFields)
+        );
 
         $sourceModelName = strtolower((new \ReflectionClass($this->source))->getShortName());
 
         foreach ($this->sourceAttributes as $attribute) {
             $value = trim($this->ask("What should be the $attribute field of the $sourceModelName? Leave blank for the default value."));
-            if (! is_null($value) AND $value != '') {
+            if (!is_null($value) AND $value != '') {
                 $this->source->{$attribute} = $value;
             }
         }
