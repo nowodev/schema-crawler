@@ -5,7 +5,7 @@ namespace DummyNamespace;
 class DummyClass extends DummyParentAdapter
 {
     /**
-     * Manipulate the dummyAttribute of the crawled product.
+     * Manipulate the dummyAttribute of the crawled schema.
      *
      * @return string
      */
@@ -13,5 +13,6 @@ class DummyClass extends DummyParentAdapter
     {
         // you can access the crawled data via the attached rawData attribute
         // $dummyAttribute = $this->rawData->dummyAttribute;
+        // return $dummyAttribute;
     }
 }
