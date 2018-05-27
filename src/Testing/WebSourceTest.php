@@ -4,6 +4,7 @@
 namespace SchemaCrawler\Testing;
 
 use ChromeHeadless\ChromeHeadless;
+use ChromeHeadless\Exceptions\ChromeException;
 use Illuminate\Foundation\Testing\TestCase;
 use SchemaCrawler\Helper\Helper;
 
@@ -98,7 +99,12 @@ abstract class WebSourceTest extends TestCase
 
         $invalidSourceUrl = $this->createInvalidUrl($this->sourceUrls[0]['url']);
 
-        $sourcePageDOM = ChromeHeadless::url($invalidSourceUrl)->getDOMCrawler();
+        try {
+            $sourcePageDOM = ChromeHeadless::url($invalidSourceUrl)->getDOMCrawler();
+        } catch (ChromeException $e) {
+            return $this->assertContains('HTTP Response', $e->getMessage());
+        }
+
         $this->assertEquals(0, $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])
             ->count(), "Found schema urls on an invalid source. Define a more precise page link css selector to avoid this.\n[Tested URL: $invalidSourceUrl]");
     }
@@ -115,8 +121,12 @@ abstract class WebSourceTest extends TestCase
 
         $invalidDetailPageUrl = $this->createInvalidUrl($detailPageUrl);
 
-        $detailPageDOM = ChromeHeadless::url(Helper::generateAbsoluteUrl($invalidDetailPageUrl, $this->sourceUrls[0]['url']))
-            ->getDOMCrawler();
+        try {
+            $detailPageDOM = ChromeHeadless::url(Helper::generateAbsoluteUrl($invalidDetailPageUrl, $this->sourceUrls[0]['url']))
+                ->getDOMCrawler();
+        } catch (ChromeException $e) {
+            return $this->assertContains('HTTP Response', $e->getMessage());
+        }
 
         foreach ($this->allowedAttributes as $attribute => $validation) {
             $this->assertEmpty($this->websource->{'get' . ucfirst(camel_case($attribute))}($detailPageDOM),
