@@ -1,7 +1,43 @@
 # Laravel Schema Crawler
 A Laravel framework extension to crawl unstructured data from websites.
 
-# Requirements
+## Introduction
+
+The Schema Crawler package crawls, validates and manipulates data from given websites. To get a better understanding of how this works, let's take a closer look at the lifecycle of the schema crawler.
+
+### Lifecycle
+
+![Lifecycle of the Schema Crawler](https://i.imgur.com/KX1WVhv.png)
+
+
+
+#### Source
+
+The source is a website, which contains all the data we want to crawl. The structure of the website has to be the following:
+
+The website must have an **Overview Page**, which has to be a listing of all the schemas that should be crawled. The listing only needs to contain a link to the **Detail Page**, where all the information of the schema can be found.
+
+![Overview Page & Detail Page](https://i.imgur.com/Jc3Cdcb.png)
+
+
+
+#### Overview Crawler
+
+The Overview Crawler process gets all the links of the overview page of the website. When it's finished, it will start a Detail Crawler process for each of the links.
+
+#### Detail Crawler
+
+The Detail Crawler process requests the passed detail page url, crawls all the data and puts it into an array.
+
+#### Adapter
+
+The Adapter will get the raw data and manipulates it (e.g. removes unnecessary spaces, parses numbers, etc.).
+
+#### Validation
+
+After the data has been manipulated by the adapter, it will run through a validation. If the validation succeeds, the data will be passed to the schema model and can be persisted there.
+
+## Requirements
 
 This package requires the [Puppeteer Chrome Headless Node library](https://github.com/GoogleChrome/puppeteer).
 
@@ -121,7 +157,7 @@ After you defined the schema and source models, you should define the attributes
 
 **Important:** The name of the attributes don't have to correspond to the column name of the schema model! 
 
-In addition of the name of the attribute, you also have to define a validation. You can use [all available validation rules by Laravel](https://laravel.com/docs/master/validation#available-validation-rules), or you can even [implement your own](https://laravel.com/docs/master/validation#custom-validation-rules).
+In addition of the name of the attribute, you also have to define a validation for the attributes. You can use [all available validation rules by Laravel](https://laravel.com/docs/master/validation#available-validation-rules), or you can even [implement your own](https://laravel.com/docs/master/validation#custom-validation-rules).
 
 The validation will be performed **after** the attributes have been processed by the adapter.
 
