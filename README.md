@@ -402,4 +402,4 @@ You can run a single source test by calling `crawler:test` and specifing the [Ro
 php artisan crawler:test 1
 ```
 
-⚠️ It is best practice to change the route key to a more readable parameter, as for example the slug. [Read here](https://laravel.com/docs/5.6/routing#implicit-binding) how to do this.
+⚠️ It is best practice to change the route key to a more readable parameter, as for example the slug. [Read the official Laravel documentation](https://laravel.com/docs/5.6/routing#implicit-binding) to see how to do this.
