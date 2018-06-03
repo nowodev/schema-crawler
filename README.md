@@ -212,3 +212,194 @@ You also need to define your default adapter in the config file (`config/schema-
 */
 'default_adapter'     => \App\Crawler\Adapters\BookAdapter::class,
 ```
+
+
+
+## Usage
+
+### Sources
+
+#### Creating the class file
+
+To create a source, you can use the `php artisan make:source` command. For Example:
+
+```bash
+php artisan make:source GoodBooksStore
+```
+
+This will create a new source under the `App\Crawler\Adapters `  namespace. In addition to that, it will create a test under the `\Tests\Feature\Crawler\Sources` namespace.
+
+#### Defining the source
+
+After creating the source class, you need to define its attributes.
+
+##### Source Urls
+
+The source urls attribute is an array which contains urls of all overview pages.
+
+```php
+/**
+ * The urls of the pages that contain links to the schemas.
+ * Options for each url can be defined that will overwrite the attributes of the crawled schemas.
+ *
+ * @var array
+ */
+protected $sourceUrls = [
+    [
+        'url' => 'https://www.goodbooksstore.com/all-books'
+    ],
+];
+```
+
+It is also possible to define specific schema attributes for each overview page. Every schema that will be crawled from the defined overview page will have the given attribute. 
+
+```php
+protected $sourceUrls = [
+    [
+		'url'	=> 'https://www.coolbooksstore.com/crime',
+		'overwriteAttributes' => [
+			'category' => 'crime'
+        ],
+		'url'	=> 'https://www.coolbooksstore.com/history',
+		'overwriteAttributes' => [
+			'category' => 'history'
+        ],
+    ],
+];
+```
+
+##### Adapter Options
+
+You can specify options that will be passed to the adapter.
+
+```php
+/**
+ * Options defined here will be accessible in the adapter.
+ *
+ * @var array
+ */
+protected $adapterOptions = ['convertIsbn' => true];
+```
+
+##### CSS Selectors
+
+The crawler needs to know where to find the needed elements on the website. Therefore you need to define the CSS selectors of these elements.
+
+```php
+/**
+ * The CSS selectors of the paging and the attributes of the schema.
+ *
+ * @var array
+ */
+protected $cssSelectors = [
+    'overview' => [
+        'detailPageLink' => '.product-name a',
+        'nextPageLink'   => '.pages a.next',
+    ],
+    'detail'   => [
+        'title'    => '.title',
+        'author'   => '.author',
+        'isbn'     => '.isbn',
+        'category' => null
+    ],
+];
+```
+
+The CSS selectors array is split up in two parts: 
+
+`overview`, which defines the needed selectors on the overview page and `detail` for the schema attributes of the detail page.
+
+`detailPageLink` describes the links to the detail page of the schemas that should be crawled. These should be an `<a>` element, as the `href` attribute will be used for the url. It doesn't matter if only relative urls are used here - internally the crawler will automatically create absolute urls.
+
+`nextPageLink`  describes the link to the next page of the overview page. You can set it to `null` if the overview page doesn't use paging.  ⚠️ **Important**: Make sure the element is **not** available on the last page anymore, otherwise the crawler will end in an infinite loop.
+
+When you define the CSS selectors for the schema attributes, the inner text of the element will be used by default. If you want to use the value of a specific element attribute, you can do it like that:
+
+````````````php
+'detail'   => [
+	'title'    => ['meta[property="og:title"]' => 'content'],
+	'author'   => ['.author-element' => 'data-author'],
+	'isbn'     => ['[itemprop="mpn"]' => 'value'],
+	'category' => null
+],
+````````````
+
+If you want to get an array of elements for the schema attribute, add the `array` keyword. 
+
+````````````php
+'detail'   => [
+	'title'    => ['meta[property="og:title"]' => 'content'],
+	'isbn'     => ['[itemprop="mpn"]' => 'value'],
+	'keywords' => ['.keywords li' => 'array']
+	'categories' => ['.categories li' => 'array|data-category']
+],
+````````````
+
+Sometimes the detail page includes an json array with the schema attributes. For example:
+
+```html
+<script type="application/ld+json">
+	{
+		"@context" : "http://schema.org",
+		"@type" : "Book",
+		"author" : "Steven Pinker",
+		"title" : "The Better Angels of Our Nature : A History of Violence and Humanity",
+		"isbn" : "9780141034645"
+	}
+</script>
+```
+
+You can access this easily by using the `json` keyword.
+
+````````````php
+'detail'   => [
+	'title'		=> ['title' => 'json'],
+	'isbn'		=> ['isbn' => 'json'],
+	'author'	=> ['author' => 'json']
+],
+````````````
+
+##### Custom Attributes
+
+If you can't specify an element via a single CSS selector, you can define a custom function for it. You can access the DOM of the website by the passed `Symfony\Component\DomCrawler\Crawler` instance.
+
+```php
+public function getIsbn(Crawler $crawler)
+{
+    $description = $crawler->filter('.short-description');
+
+    if (! $description->count()) {
+        return null;
+    }
+
+    return str_from($description->text(), "ISBN: ");
+}
+```
+
+#### Feeds
+
+In addition to normal websites, you can also add XML feeds as sources. You can do this by adding the `--feed` option to the `make:source` command.
+
+```bash
+php artisan make:source CoolBooksStore --feed
+```
+
+The structure of the feed source looks very similar to the normal web source, but it contains some additional parameters at the feed urls attribute.
+
+`schemaNode` describes the node in the XML file that contains information about the schema. All attributes inside this node will be accessible for the path selectors.
+
+Sometimes feeds are zipped. Therefore you can set the `zipped` attribute if the crawler needs to extract the file first. If this attribute is not given, it will be default to `false`. 
+
+#### Testing the sources
+
+The schema crawler automatically generates tests for each source by default. These are located under `tests\Feature\Crawler\Sources`. Each source test extends the `SchemaCrawler\Testing\WebSourceTest` (for websites) or the `SchemaCrawler\Testing\FeedSourceTest` (for feeds).
+
+Normally you don't need to overwrite the parent tests or add additional tests. **Everything will work out of the box.** But you can extend them if it's needed.
+
+You can run a single source test by calling `crawler:test` and specifing the [Route Key Name](https://laravel.com/docs/5.6/routing#implicit-binding) of the source model. By default this is the ID.
+
+```bash
+php artisan crawler:test 1
+```
+
+⚠️ It is best practice to change the route key to a more readable parameter, as for example the slug. [Read here](https://laravel.com/docs/5.6/routing#implicit-binding) how to do this.
