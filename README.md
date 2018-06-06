@@ -430,7 +430,7 @@ public static function createFromCrawlerData(array $data)
 public function updateFromCrawlerData(array $data)
 {
     $this->update([
-        'category' => array_merge($data['category']), $this->category)
+        'category' => array_merge($data['category'], $this->category)
     ]);
 }
 ```
@@ -474,3 +474,64 @@ public function getIsbn()
 ```
 
 The name of the function has to be `get` followed by the name of the attribute in [camel case](https://laravel.com/docs/5.6/helpers#method-camel-case). 
+
+### Running the Crawler
+
+Before running the crawler, make sure you defined the correct crawler class file name for each source. This should be defined in the source model.
+
+```php
+/**
+ * Get the crawler class name of the source.
+ *
+ * @return string
+ */
+public function getCrawlerClassName(): string
+{
+    return "App\Crawler\Sources\\".ucfirst(camel_case($this->name));
+}
+```
+
+#### Using the SchemaCrawler class
+
+One option to run the crawler is by using the `SchemaCrawler\SchemaCrawler` class. 
+
+```php
+use SchemaCrawler\SchemaCrawler;
+
+SchemaCrawler::run();
+```
+
+You can also run the crawler on a single source by passing the [Route Key Name](https://laravel.com/docs/5.6/routing#implicit-binding) (by default, this should be the ID). 
+
+```php
+use SchemaCrawler\SchemaCrawler;
+
+$source = App\Bookstore::first();
+SchemaCrawler::runSource($source->id);
+```
+
+#### Using the Command Line
+
+It is also possible to start the crawler via the command line. You can run
+
+```bash
+php artisan crawler:start
+```
+
+to crawl all the sources, or use
+
+```
+php artisan crawler:start 1
+```
+
+to only crawl a single source.
+
+#### Failed Crawls
+
+If a schema couldn't be crawled successfully due to an invalid format, it will be saved in the `invalid_schemas` database table. The table contains a couple of helpful columns to determine why the schema validation failed.
+
+`validation_error` displays the message that has been thrown by the validator.
+
+`raw_data` contains all the crawled attributes in the original format from the website. 
+
+`extracted_data` contains all the attributes after they have been processed by the adapter. This field will be `null` if the raw validation has failed.
