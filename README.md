@@ -403,3 +403,74 @@ php artisan crawler:test 1
 ```
 
 ⚠️ It is best practice to change the route key to a more readable parameter, as for example the slug. [Read the official Laravel documentation](https://laravel.com/docs/5.6/routing#implicit-binding) to see how to do this.
+
+### Data Handling
+
+After the data has been crawled, validated and manipulated by the adapter, it will be passed to the `createFromCrawlerData` or `updateFromCrawlerData` function of the defined schema model. This is the place where you should persist the data. E.g:
+
+```php
+/**
+ * This function will be called after the attributes of a schema have been crawled
+ * and no existing schema has been found.
+ *
+ * @param array $data Attributes that have been crawled.
+ */
+public static function createFromCrawlerData(array $data)
+{
+    static::create($data);
+}
+```
+
+```php
+/**
+ * This function will be called after the attributes of the schema have been crawled.
+ *
+ * @param array $data Attributes that have been crawled.
+ */
+public function updateFromCrawlerData(array $data)
+{
+    $this->update([
+        'category' => array_merge($data['category']), $this->category)
+    ]);
+}
+```
+
+The data array contains all the attributes you defined in the source. In addition to that it contains the following attributes:
+
+- `url` The url of the crawled schema
+- `sourceId` The database ID of the source
+- `adapterOptions` The adapter options that have been specified in the source
+
+### Adapters
+
+Adapters are used to modify and standardize the crawled data. 
+
+You can create an adapter by using the `php artisan make:adapter` command. For Example:
+
+```bash
+php artisan make:adapter BookAdapter
+```
+
+This will create a new adapter under the `App\Crawler\Adapters `  namespace.
+
+In the adapter you can define a getter method for each attribute you want to modify. You can access the `$rawData` object of the class to get the crawled attributes. Additionally you can get the adapter options via the `getOption()` function of the class. 
+
+```php
+/**
+ * Manipulate the isbn of the crawled product.
+ *
+ * @return string
+ */
+public function getIsbn()
+{
+    $isbn = trim($this->rawData->isbn);
+
+    if ($this->getOption('convertIsbn', false)) {
+        $isbn = '978' . $isbn . '3';
+    }
+
+    return $isbn;
+}
+```
+
+The name of the function has to be `get` followed by the name of the attribute in [camel case](https://laravel.com/docs/5.6/helpers#method-camel-case). 
