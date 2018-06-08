@@ -1,6 +1,24 @@
 # Laravel Schema Crawler
 A Laravel framework extension to crawl unstructured data from websites.
 
+- [Introduction](#introduction)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Defining the Models](#defining-the-models)
+  - [Defining the Attributes & Validation](#defining-the-attributes--validation)
+  - [Defining the Adapter](#defining-the-adapter)
+- [Usage](#usage)
+  - [Sources](#sources)
+  - [Data Handling](#data-handling)
+  - [Adapters](#adapters)
+  - [Running the Crawler](#running-the-crawler)
+  - [Events](#events)
+- [Advanced Configuration](#advanced-configuration)
+  - [Generator](#generator)
+  - [Chrome](#chrome)
+- [Testing](#testing)
+
 ## Introduction
 
 The Schema Crawler package crawls, validates and manipulates data from given websites. To get a better understanding of how this works, let's take a closer look at the lifecycle of the schema crawler.
