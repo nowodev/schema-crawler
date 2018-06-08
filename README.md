@@ -609,6 +609,6 @@ Internally the crawler uses the [helloiamlukas/laravel-chrome](https://github.co
 
 You can run the tests by using
 
-```php
+```bash
 composer test
 ```
