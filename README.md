@@ -299,6 +299,17 @@ You can specify options that will be passed to the adapter.
 protected $adapterOptions = ['convertIsbn' => true];
 ```
 
+It is also possible to define a specific adapter. By default the defined adapter in the `config/schema-crawler.php` file will be used.
+
+```php
+/**
+ * The default adapter that will be used can be overwritten here.
+ *
+ * @var string
+ */
+protected $adapter = SpecialAdapter::class;
+```
+
 ##### CSS Selectors
 
 The crawler needs to know where to find the needed elements on the website. Therefore you need to define the CSS selectors of these elements.
