@@ -76,7 +76,7 @@ As this is a private repo, you need to add the repository to your composer.json 
 "repositories": [
     {
         "type": "github",
-        "url":  "git@github.com:helloiamlukas/schema-crawler.git"
+        "url":  "git@github.com:redahead/schema-crawler.git"
     }
 ]
 ```
@@ -84,7 +84,7 @@ As this is a private repo, you need to add the repository to your composer.json 
 After you added the repo to your composer configuration, you can install the package via the composer by running the following command:
 
 ```bash
-composer require helloiamlukas/schema-crawler
+composer require redahead/schema-crawler
 ```
 
 The package will automatically register itself.

@@ -1,7 +1,7 @@
 {
-    "name": "helloiamlukas/schema-crawler",
+    "name": "redahead/schema-crawler",
     "description": "A Laravel framework extension to crawl data from websites.",
-    "homepage": "https://github.com/helloiamlukas/schema-crawler",
+    "homepage": "https://github.com/redahead/schema-crawler",
     "keywords":
     [
         "laravel",
