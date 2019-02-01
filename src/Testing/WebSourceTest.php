@@ -3,7 +3,7 @@
 
 namespace SchemaCrawler\Testing;
 
-use ChromeHeadless\ChromeHeadless;
+use ChromeHeadless\Laravel\ChromeHeadless;
 use ChromeHeadless\Exceptions\ChromeException;
 use Illuminate\Foundation\Testing\TestCase;
 use SchemaCrawler\Helper\Helper;

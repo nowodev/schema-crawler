@@ -6,7 +6,7 @@ use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Jobs\DetailCrawler;
 use SchemaCrawler\Sources\WebSource;
-use ChromeHeadless\ChromeHeadless;
+use ChromeHeadless\Laravel\ChromeHeadless;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

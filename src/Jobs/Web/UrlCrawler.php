@@ -5,7 +5,7 @@ namespace SchemaCrawler\Jobs\Web;
 use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\WebSource;
-use ChromeHeadless\ChromeHeadless;
+use ChromeHeadless\Laravel\ChromeHeadless;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
