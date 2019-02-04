@@ -12,7 +12,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.1",
-        "milivojsa/laravel-chrome": "^2.0",
+        "milivojsa/laravel-chrome": "^2.1",
         "prewk/xml-string-streamer": "^0.11.0"
     },
     "require-dev": {
