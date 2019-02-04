@@ -632,7 +632,7 @@ If you use the generator commands to create adapters or sources, you might want 
 
 ### Chrome
 
-Internally the crawler uses the [helloiamlukas/laravel-chrome](https://github.com/helloiamlukas/laravel-chrome) component to request websites. Therefore, if you want to change the user agent, chrome path, viewport or other parameters, check out the [documentation](https://github.com/helloiamlukas/laravel-chrome#configuration).
+Internally the crawler uses the [milivojsa/laravel-chrome](https://github.com/milivojsa/laravel-chrome) component to request websites. Therefore, if you want to change the user agent, chrome path, viewport or other parameters, check out the [documentation](https://github.com/milivojsa/laravel-chrome#configuration).
 
 ## Testing
 
