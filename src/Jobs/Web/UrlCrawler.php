@@ -24,6 +24,12 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
      */
     protected $cssSelectors = [];
 
+    /**
+     * The shop specific crawler settings.
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [];
 
     /**
      * Create a new job instance.
@@ -34,6 +40,7 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
     {
         parent::__construct($source);
         $this->cssSelectors = $source->getCssSelectors()['overview'];
+        $this->crawlerSettings = $source->getCrawlerSettings();
     }
 
     /**
@@ -105,8 +112,6 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
             return Helper::scraperapiCrawl($url);
         }
 
-        // TODO
-        // chrome-php: blacklist and excluded are not merged with the global values
         return ChromeHeadless::url($url)
             ->setBlacklist($this->crawlerSettings['blacklist'])
             ->setExcluded($this->crawlerSettings['excluded'])
