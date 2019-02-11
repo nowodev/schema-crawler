@@ -46,6 +46,7 @@ abstract class WebSourceTest extends TestCase
         }
 
         foreach ($this->sourceUrls as $sourcePage) {
+            // TODO
             $sourcePageDOM = ChromeHeadless::url($sourcePage['url'])->getDOMCrawler();
             $this->assertGreaterThan(0, $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])
                 ->count(), "Couldn't find any schema urls.\n[Tested URL: " . $sourcePage['url'] . "]");
@@ -60,6 +61,7 @@ abstract class WebSourceTest extends TestCase
         }
 
         foreach ($this->sourceUrls as $sourcePage) {
+            // TODO
             $sourcePageDOM = ChromeHeadless::url($sourcePage['url'])->getDOMCrawler();
             if ($sourcePageDOM->filter($this->cssSelectors['overview']['nextPageLink'])->count() > 0) {
                 return $this->assertTrue(true);
@@ -75,10 +77,12 @@ abstract class WebSourceTest extends TestCase
         if (!empty($this->websource->getCustomSchemaUrls())) {
             $detailPageUrl = $this->websource->getCustomSchemaUrls()[0]['url'];
         } else {
+            // TODO
             $sourcePageDOM = ChromeHeadless::url($this->sourceUrls[0]['url'])->getDOMCrawler();
             $detailPageUrl = $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])->attr('href');
         }
 
+        // TODO
         $detailPageDOM = ChromeHeadless::url(Helper::generateAbsoluteUrl($detailPageUrl, $this->sourceUrls[0]['url']))
             ->getDOMCrawler();
 
@@ -100,6 +104,7 @@ abstract class WebSourceTest extends TestCase
         $invalidSourceUrl = $this->createInvalidUrl($this->sourceUrls[0]['url']);
 
         try {
+            // TODO
             $sourcePageDOM = ChromeHeadless::url($invalidSourceUrl)->getDOMCrawler();
         } catch (ChromeException $e) {
             return $this->assertContains('HTTP Response', $e->getMessage());
@@ -115,6 +120,7 @@ abstract class WebSourceTest extends TestCase
         if (!empty($this->websource->getCustomSchemaUrls())) {
             $detailPageUrl = $this->websource->getCustomSchemaUrls()[0]['url'];
         } else {
+            // TODO
             $sourcePageDOM = ChromeHeadless::url($this->sourceUrls[0]['url'])->getDOMCrawler();
             $detailPageUrl = $sourcePageDOM->filter($this->cssSelectors['overview']['detailPageLink'])->attr('href');
         }
@@ -122,6 +128,7 @@ abstract class WebSourceTest extends TestCase
         $invalidDetailPageUrl = $this->createInvalidUrl($detailPageUrl);
 
         try {
+            // TODO
             $detailPageDOM = ChromeHeadless::url(Helper::generateAbsoluteUrl($invalidDetailPageUrl, $this->sourceUrls[0]['url']))
                 ->getDOMCrawler();
         } catch (ChromeException $e) {

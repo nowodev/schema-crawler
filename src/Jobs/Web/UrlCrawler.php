@@ -100,8 +100,17 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
     }
 
     private function browseToWebsite(string $url)
-    {
-        return ChromeHeadless::url($url)->getDOMCrawler();
+    {          
+        if ($this->crawlerSettings['type'] === 'scraperapi') {
+            return Helper::scraperapiCrawl($url);
+        }
+
+        // TODO
+        // chrome-php: blacklist and excluded are not merged with the global values
+        return ChromeHeadless::url($url)
+            ->setBlacklist($this->crawlerSettings['blacklist'])
+            ->setExcluded($this->crawlerSettings['excluded'])
+            ->getDOMCrawler();
     }
 
     private function getUrlsFromWebsite(Crawler $website, $overwriteAttributes)

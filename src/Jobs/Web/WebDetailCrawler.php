@@ -2,16 +2,17 @@
 
 namespace SchemaCrawler\Jobs\Web;
 
-use SchemaCrawler\Containers\RawData;
-use SchemaCrawler\Exceptions\InvalidSchema;
-use SchemaCrawler\Jobs\DetailCrawler;
-use SchemaCrawler\Sources\WebSource;
 use ChromeHeadless\Laravel\ChromeHeadless;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use SchemaCrawler\Containers\RawData;
+use SchemaCrawler\Exceptions\InvalidSchema;
+use SchemaCrawler\Helper\Helper;
+use SchemaCrawler\Jobs\DetailCrawler;
+use SchemaCrawler\Sources\WebSource;
 use Symfony\Component\DomCrawler\Crawler;
 
 class WebDetailCrawler extends DetailCrawler implements ShouldQueue
@@ -88,7 +89,16 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
 
     private function browseToWebsite($url)
     {
-        return ChromeHeadless::url($url)->getDOMCrawler();
+        if ($this->crawlerSettings['type'] === 'scraperapi') {
+            return Helper::scraperapiCrawl($url);
+        }
+
+        // TODO
+        // chrome-php: blacklist and excluded are not merged with the global values
+        return ChromeHeadless::url($url)
+            ->setBlacklist($this->crawlerSettings['blacklist'])
+            ->setExcluded($this->crawlerSettings['excluded'])
+            ->getDOMCrawler();
     }
 
     private function getDataFromWebsite(Crawler $website)
