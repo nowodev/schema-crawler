@@ -150,6 +150,8 @@ abstract class WebSourceTest extends TestCase
         try {
             $absoluteUrl = Helper::generateAbsoluteUrl($invalidDetailPageUrl, $this->sourceUrls[0]['url']);
             $detailPageDOM = $this->runCrawler($absoluteUrl);
+        } catch (ChromeException $e) {
+            return $this->assertContains('HTTP Response', $e->getMessage());
         } catch (Exception $e) {
             return $this->assertContains('HTTP Response', $e->getMessage());
         }
@@ -183,7 +185,7 @@ abstract class WebSourceTest extends TestCase
             return Helper::scraperapiCrawl($url);
         } 
 
-        return = ChromeHeadless::url($url)
+        return ChromeHeadless::url($url)
             ->setBlacklist($this->crawlerSettings['blacklist'])
             ->setExcluded($this->crawlerSettings['excluded'])
             ->getDOMCrawler();
