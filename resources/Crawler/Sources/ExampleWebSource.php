@@ -16,6 +16,12 @@ class ExampleWebSource extends WebSource
         ],
     ];
 
+    protected $crawlerSettings = [  
+        'type'      => 'chrome_headless', 
+        'blacklist' => ['analytics.js'], 
+        'excluded'  => ['image', 'stylesheet'],
+    ];
+
     protected $cssSelectors = [
         'overview' => [
             'detailPageLink' => '.products a',

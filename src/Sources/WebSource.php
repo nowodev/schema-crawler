@@ -23,6 +23,17 @@ abstract class WebSource extends Source
     protected $cssSelectors = [];
 
     /**
+     * Web source specific crawler settings.      
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [  
+        'type'      => 'chrome_headless', 
+        'blacklist' => [], 
+        'excluded'  => [],
+    ];
+
+    /**
      * Get the urls of the pages that contain links to the schemas.
      *
      * @return array
@@ -40,6 +51,16 @@ abstract class WebSource extends Source
     public function getCssSelectors(): array
     {
         return $this->cssSelectors;
+    }
+
+     /**
+     * Get the shop specific crawler settings.
+     *
+     * @return array
+     */
+    public function getCrawlerSettings(): array
+    {
+        return $this->crawlerSettings;
     }
 
     /**

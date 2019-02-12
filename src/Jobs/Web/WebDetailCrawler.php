@@ -34,6 +34,13 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
     protected $cssSelectors = [];
 
     /**
+     * The shop specific crawler settings.
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [];
+
+    /**
      * The DOM of the crawled website.
      *
      * @var Crawler
@@ -60,6 +67,7 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
         parent::__construct($overwriteAttributes, $source);
         $this->url = $url;
         $this->cssSelectors = $source->getCssSelectors()['detail'];
+        $this->crawlerSettings = $source->getCrawlerSettings();
     }
 
     /**
@@ -93,8 +101,6 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
             return Helper::scraperapiCrawl($url);
         }
 
-        // TODO
-        // chrome-php: blacklist and excluded are not merged with the global values
         return ChromeHeadless::url($url)
             ->setBlacklist($this->crawlerSettings['blacklist'])
             ->setExcluded($this->crawlerSettings['excluded'])

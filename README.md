@@ -231,6 +231,23 @@ You also need to define your default adapter in the config file (`config/schema-
 'default_adapter'     => \App\Crawler\Adapters\BookAdapter::class,
 ```
 
+### Scraperapi
+
+If you want to use Scraper API instead of Chrome Headless crawler, you need to set API key in the config file (`config/schema-crawler.php`).
+
+```php
+ /*
+|--------------------------------------------------------------------------
+| Scraperapi API key
+|--------------------------------------------------------------------------
+|
+| Define the scraperapi API key that should be used.
+|
+*/
+
+'scraperapi_key' => env('SCRAPERAPI_KEY', null),
+```
+
 
 
 ## Usage
@@ -308,6 +325,25 @@ It is also possible to define a specific adapter. By default the defined adapter
  * @var string
  */
 protected $adapter = SpecialAdapter::class;
+```
+
+##### Crawler Settings
+
+The schema-crawler needs to know which type of crawler should be used. Right now supported types are: `chrome_headless` and `scraperapi`. Also, you can pass there shop specific `blacklist` (array of regex patterns used for filtering the requests) and `excluded` (array of resource types used for filtering the requests) settings. 
+
+⚠️ Global and shop specific settings for `blacklist` and `excluded` will be not used if crawler type is `scraperapi`!
+
+```php
+/**
+     * Shop specific crawler settings.      
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [  
+        'type'      => 'chrome_headless', 
+        'blacklist' => [], 
+        'excluded'  => [],
+    ];
 ```
 
 ##### CSS Selectors
@@ -424,6 +460,8 @@ Sometimes feeds are zipped. Therefore you can set the `zipped` attribute if the 
 The schema crawler automatically generates tests for each source by default. These are located under `tests\Feature\Crawler\Sources`. Each source test extends the `SchemaCrawler\Testing\WebSourceTest` (for websites) or the `SchemaCrawler\Testing\FeedSourceTest` (for feeds).
 
 Normally you don't need to overwrite the parent tests or add additional tests. **Everything will work out of the box.** But you can extend them if it's needed.
+
+⚠️ Crawler settings specified in the web source class you are testing will be used when you run tests!
 
 You can run a single source test by calling `crawler:test` and specifing the [Route Key Name](https://laravel.com/docs/5.6/routing#implicit-binding) of the source model. By default this is the ID.
 
