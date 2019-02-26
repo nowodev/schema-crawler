@@ -98,7 +98,7 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
     private function browseToWebsite($url)
     {
         if ($this->crawlerSettings['type'] === 'scraperapi') {
-            return Helper::scraperapiCrawl($url);
+            return Helper::scraperapiCrawl($url, $this->crawlerSettings['scraperapi_render_js']);
         }
 
         return ChromeHeadless::url($url)

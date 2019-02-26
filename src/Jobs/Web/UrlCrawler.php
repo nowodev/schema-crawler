@@ -109,7 +109,7 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
     private function browseToWebsite(string $url)
     {          
         if ($this->crawlerSettings['type'] === 'scraperapi') {
-            return Helper::scraperapiCrawl($url);
+            return Helper::scraperapiCrawl($url, $this->crawlerSettings['scraperapi_render_js']);
         }
 
         return ChromeHeadless::url($url)

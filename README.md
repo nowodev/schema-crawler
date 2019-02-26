@@ -329,7 +329,7 @@ protected $adapter = SpecialAdapter::class;
 
 ##### Crawler Settings
 
-The schema-crawler needs to know which type of crawler should be used. Right now supported types are: `chrome_headless` and `scraperapi`. Also, you can pass there shop specific `blacklist` (array of regex patterns used for filtering the requests) and `excluded` (array of resource types used for filtering the requests) settings. 
+The schema-crawler needs to know which type of crawler should be used. Right now supported types are: `chrome_headless` and `scraperapi`. You can pass there shop specific `blacklist` (array of regex patterns used to filter requests) and `excluded` (array of resource types used for filtering the requests) settings that will affect `chrome_headless` crawler, while you can also pass `scraperapi_render_js` setting to specify should Javascript be rendered or not if you are using `scraperapi` crawler type . 
 
 ⚠️ Global and shop specific settings for `blacklist` and `excluded` will be not used if crawler type is `scraperapi`!
 
@@ -340,9 +340,10 @@ The schema-crawler needs to know which type of crawler should be used. Right now
      * @var array
      */
     protected $crawlerSettings = [  
-        'type'      => 'chrome_headless', 
-        'blacklist' => [], 
-        'excluded'  => [],
+        'type'                  => 'chrome_headless', 
+        'scraperapi_render_js'  => false,
+        'blacklist'             => [], 
+        'excluded'              => [],
     ];
 ```
 
