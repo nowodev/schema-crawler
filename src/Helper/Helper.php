@@ -81,12 +81,12 @@ class Helper
      * @param  string  $url
      * @return  \Symfony\Component\DomCrawler\Crawler
      */
-    public static function scraperapiCrawl($url)
+    public static function scraperapiCrawl($url, $render = false)
     {
         $url = implode('', [
             'http://api.scraperapi.com?key=',
             config('schema-crawler.scraperapi_key'),
-            '&render=true',
+            $render === true ? '&render=true' : '',
             '&url=',
             urlencode($url),
         ]);
