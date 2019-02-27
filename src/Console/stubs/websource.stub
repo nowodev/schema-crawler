@@ -33,7 +33,6 @@ class DummyClass extends DummyParentWebSource
      */
     protected $crawlerSettings = [  
         'type'                  => 'chrome_headless', 
-        'scraperapi_render_js'  => false,
         'blacklist'             => [], 
         'excluded'              => ['stylesheet', 'image', 'media', 'font'],
     ];

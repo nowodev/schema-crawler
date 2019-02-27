@@ -5,7 +5,7 @@ namespace SchemaCrawler\Jobs\Web;
 use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\WebSource;
-use ChromeHeadless\Laravel\ChromeHeadless;
+use SchemaCrawler\Browser\Browse;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -108,14 +108,7 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
 
     private function browseToWebsite(string $url)
     {          
-        if ($this->crawlerSettings['type'] === 'scraperapi') {
-            return Helper::scraperapiCrawl($url, $this->crawlerSettings['scraperapi_render_js']);
-        }
-
-        return ChromeHeadless::url($url)
-            ->setBlacklist($this->crawlerSettings['blacklist'])
-            ->setExcluded($this->crawlerSettings['excluded'])
-            ->getDOMCrawler();
+        return Browse::browse($url, $this->crawlerSettings );
     }
 
     private function getUrlsFromWebsite(Crawler $website, $overwriteAttributes)
