@@ -13,7 +13,7 @@ class CrawlerTestCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'crawler:test {source?}';
+    protected $signature = 'crawler:test {source?} {--timeout=60}';
 
     /**
      * The console command description.
@@ -58,7 +58,7 @@ class CrawlerTestCommand extends Command
             ], config('schema-crawler.generator.websource.tests_namespace'));
         }
 
-        (new Process(implode(' ', $command)))->run(function ($type, $buffer) {
+        (new Process(implode(' ', $command)))->setTimeout($this->option('timeout'))->run(function ($type, $buffer) {
             echo $buffer;
         });
     }

@@ -3,7 +3,7 @@
 
 namespace SchemaCrawler\Testing;
 
-use ChromeHeadless\Laravel\ChromeHeadless;
+use SchemaCrawler\Browser\Browse;
 use ChromeHeadless\Exceptions\ChromeException;
 use Illuminate\Foundation\Testing\TestCase;
 use SchemaCrawler\Helper\Helper;
@@ -181,13 +181,6 @@ abstract class WebSourceTest extends TestCase
 
     protected function runCrawler($url)
     {
-        if ($this->crawlerSettings['type'] === 'scraperapi') {
-            return Helper::scraperapiCrawl($url, $this->crawlerSettings['scraperapi_render_js']);
-        } 
-
-        return ChromeHeadless::url($url)
-            ->setBlacklist($this->crawlerSettings['blacklist'])
-            ->setExcluded($this->crawlerSettings['excluded'])
-            ->getDOMCrawler();
+		return Browse::browse($url, $this->crawlerSettings );
     }
 }

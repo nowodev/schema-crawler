@@ -108,5 +108,17 @@ return [
     */
    
     'scraperapi_key' => env('SCRAPERAPI_KEY', null),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | ProxyCrawl Tokens
+    |--------------------------------------------------------------------------
+    |
+    | Define the normal and javascript proxyCrawl tokens
+    |
+    */
+   
+    'proxycrawl_js_token' => env('PROXYCRAWL_JS_TOKEN', null),
+    'proxycrawl_token' => env('PROXYCRAWL_TOKEN', null),
 
 ];

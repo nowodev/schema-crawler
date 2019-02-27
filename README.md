@@ -233,7 +233,7 @@ You also need to define your default adapter in the config file (`config/schema-
 
 ### Scraperapi
 
-If you want to use Scraper API instead of Chrome Headless crawler, you need to set API key in the config file (`config/schema-crawler.php`).
+If you want to use Scraper API you need to set API key in the config file (`config/schema-crawler.php`).
 
 ```php
  /*
@@ -246,6 +246,24 @@ If you want to use Scraper API instead of Chrome Headless crawler, you need to s
 */
 
 'scraperapi_key' => env('SCRAPERAPI_KEY', null),
+```
+
+### Proxycrawl
+
+If you want to use ProxyCrawl API you need to set API key in the config file (`config/schema-crawler.php`).
+
+```php
+ /*
+|--------------------------------------------------------------------------
+| ProxyCrawl Tokens
+|--------------------------------------------------------------------------
+|
+| Define the normal and javascript proxyCrawl tokens
+|
+*/
+
+'proxycrawl_js_token' => env('PROXYCRAWL_JS_TOKEN', null),
+'proxycrawl_token' => env('PROXYCRAWL_TOKEN', null),
 ```
 
 
@@ -329,9 +347,9 @@ protected $adapter = SpecialAdapter::class;
 
 ##### Crawler Settings
 
-The schema-crawler needs to know which type of crawler should be used. Right now supported types are: `chrome_headless` and `scraperapi`. You can pass there shop specific `blacklist` (array of regex patterns used to filter requests) and `excluded` (array of resource types used for filtering the requests) settings that will affect `chrome_headless` crawler, while you can also pass `scraperapi_render_js` setting to specify should Javascript be rendered or not if you are using `scraperapi` crawler type . 
-
-⚠️ Global and shop specific settings for `blacklist` and `excluded` will be not used if crawler type is `scraperapi`!
+The schema-crawler needs to know which type of browser should be used. Right now supported types are: `chrome_headless`, `scraperapi` and `proxy_crawl`. 
+###### Chrome headless
+You can pass there shop specific `blacklist` (array of regex patterns used to filter requests) and `excluded` (array of resource types used for filtering the requests).
 
 ```php
 /**
@@ -341,9 +359,54 @@ The schema-crawler needs to know which type of crawler should be used. Right now
      */
     protected $crawlerSettings = [  
         'type'                  => 'chrome_headless', 
-        'scraperapi_render_js'  => false,
         'blacklist'             => [], 
         'excluded'              => [],
+    ];
+```
+###### Scraperapi
+
+You can pass `render_script` setting to specify Javascript be rendered or not.
+
+```php
+/**
+     * Shop specific crawler settings.      
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [  
+        'type'                  => 'scraperapi', 
+        'render_script'			=> true,
+    ];
+```
+
+###### Proxy Crawl
+
+You can pass `render_script` setting to specify Javascript be rendered or not. For other options please look at the proxycrawl API documents.
+
+```php
+/**
+     * Shop specific crawler settings.      
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [  
+        'type'                  => 'proxy_crawl', 
+        'render_script'			=> true,
+    ];
+```
+###### Retry
+You can specify `retry` option for `scraperapi` and `proxy_crawl` in order to force retury in case of api errors. The default value is `1`.
+
+```php
+/**
+     * Shop specific crawler settings.      
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [  
+        'type'                  => 'proxy_crawl', 
+        'render_script'			=> true,
+        'retry'					=> 3,
     ];
 ```
 
@@ -467,7 +530,7 @@ Normally you don't need to overwrite the parent tests or add additional tests. *
 You can run a single source test by calling `crawler:test` and specifing the [Route Key Name](https://laravel.com/docs/5.6/routing#implicit-binding) of the source model. By default this is the ID.
 
 ```bash
-php artisan crawler:test 1
+php artisan crawler:test 1 --timeout=60
 ```
 
 ⚠️ It is best practice to change the route key to a more readable parameter, as for example the slug. [Read the official Laravel documentation](https://laravel.com/docs/5.6/routing#implicit-binding) to see how to do this.

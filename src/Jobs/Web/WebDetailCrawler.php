@@ -2,7 +2,7 @@
 
 namespace SchemaCrawler\Jobs\Web;
 
-use ChromeHeadless\Laravel\ChromeHeadless;
+use SchemaCrawler\Browser\Browse;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -97,14 +97,7 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
 
     private function browseToWebsite($url)
     {
-        if ($this->crawlerSettings['type'] === 'scraperapi') {
-            return Helper::scraperapiCrawl($url, $this->crawlerSettings['scraperapi_render_js']);
-        }
-
-        return ChromeHeadless::url($url)
-            ->setBlacklist($this->crawlerSettings['blacklist'])
-            ->setExcluded($this->crawlerSettings['excluded'])
-            ->getDOMCrawler();
+        return Browse::browse($url, $this->crawlerSettings );
     }
 
     private function getDataFromWebsite(Crawler $website)
