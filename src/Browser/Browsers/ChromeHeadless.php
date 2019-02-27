@@ -21,15 +21,5 @@ class ChromeHeadless extends AbstractBrowser
             ->getDOMCrawler();
 	}
 
-    /**
-     * translate general options to Browser specific options
-     * 
-     */
-    public function translateOptions()
-    {
-		$this->options['blacklist'] = $this->options['blacklist'] ?? '';
-		$this->options['excluded'] = $this->options['excluded'] ?? '';
-	}
-
     
 }
