@@ -151,4 +151,14 @@ abstract class DetailCrawler implements ShouldQueue
 
         return $query->first();
     }
+    
+    /**
+     * Get the tags that should be assigned to the job.
+     *
+     * @return array
+     */
+    public function tags()
+    {
+        return ['detail', 'crawler', $this->source->getId()];
+    }
 }
