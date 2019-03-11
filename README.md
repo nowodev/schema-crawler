@@ -347,7 +347,20 @@ protected $adapter = SpecialAdapter::class;
 
 ##### Crawler Settings
 
-The schema-crawler needs to know which type of browser should be used. Right now supported types are: `chrome_headless`, `scraperapi` and `proxy_crawl`. 
+The schema-crawler needs to know which type of browser should be used. Right now supported types are: `simple`, `chrome_headless`, `scraperapi` and `proxy_crawl`. 
+###### Simple
+
+This will execute a simple GuzzleHttp request. Javascript will not be rendered in this case so you need to make sure non of the attributes are dependant on that.
+```php
+/**
+     * Shop specific crawler settings.      
+     *
+     * @var array
+     */
+    protected $crawlerSettings = [  
+        'type'                  => 'simple', 
+    ];
+```
 ###### Chrome headless
 You can pass there shop specific `blacklist` (array of regex patterns used to filter requests) and `excluded` (array of resource types used for filtering the requests).
 

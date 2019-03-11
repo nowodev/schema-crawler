@@ -4,9 +4,11 @@
 namespace SchemaCrawler\Testing;
 
 use SchemaCrawler\Browser\Browse;
+use SchemaCrawler\Exceptions\BrowserException;
+use SchemaCrawler\Helper\Helper;
 use ChromeHeadless\Exceptions\ChromeException;
 use Illuminate\Foundation\Testing\TestCase;
-use SchemaCrawler\Helper\Helper;
+
 
 abstract class WebSourceTest extends TestCase
 {
@@ -121,6 +123,10 @@ abstract class WebSourceTest extends TestCase
 
         try {
             $sourcePageDOM = $this->runCrawler($invalidSourceUrl);
+        } catch (ChromeException $e) {
+            return $this->assertContains('HTTP Response', $e->getMessage());
+        } catch (BrowserException $e) {
+            return $this->assertContains('HTTP Response', $e->getMessage());
         } catch (Exception $e) {
             return $this->assertContains('HTTP Response', $e->getMessage());
         }
@@ -151,6 +157,8 @@ abstract class WebSourceTest extends TestCase
             $absoluteUrl = Helper::generateAbsoluteUrl($invalidDetailPageUrl, $this->sourceUrls[0]['url']);
             $detailPageDOM = $this->runCrawler($absoluteUrl);
         } catch (ChromeException $e) {
+            return $this->assertContains('HTTP Response', $e->getMessage());
+        } catch (BrowserException $e) {
             return $this->assertContains('HTTP Response', $e->getMessage());
         } catch (Exception $e) {
             return $this->assertContains('HTTP Response', $e->getMessage());
