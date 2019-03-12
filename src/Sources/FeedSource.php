@@ -21,6 +21,14 @@ abstract class FeedSource extends Source
      * @var array
      */
     protected $pathSelectors = [];
+    
+    /**
+     * Attributes that require multiple nodes to be collected. 
+     * e.g. sizes, usually xml feeds have several lines of the same product each with one diffrent size
+     *
+     * @var array
+     */
+    protected $groupedAttributes = [];
 
     /**
      * Get the urls of the pages that contain links to the schemas.
@@ -40,6 +48,26 @@ abstract class FeedSource extends Source
     public function getPathSelectors(): array
     {
         return $this->pathSelectors;
+    }
+    
+    /**
+     * Get grouped attibutes.
+     *
+     * @return array
+     */
+    public function getGroupedAttributes(): array
+    {
+        return $this->groupedAttributes;
+    }
+    
+    /**
+     * Determone if the node should be crawled or not 
+     * @return bool
+     */
+    public function shouldBeCrawled(Crawler $node): bool
+    {
+		// e.g. ignore non-relevant categories
+        return true;
     }
 
     /**

@@ -532,6 +532,24 @@ The structure of the feed source looks very similar to the normal web source, bu
 
 Sometimes feeds are zipped. Therefore you can set the `zipped` attribute if the crawler needs to extract the file first. If this attribute is not given, it will be default to `false`. 
 
+##### Grouped Attributes
+Some feeds provide multiple entries for the same object with one altering attribute. For instance multiple entries for the same sneaker but with diffrent sizes. Using `groupedAttributes` defined in the source class you can define these attributes and make sure all the values of the attribute are captured. 
+
+```php
+ protected $groupedAttributes = ['sizes'];
+```
+
+##### Conditional Crawling 
+Feeds are usually consisted of several product types, so it is usefull to be able to filter some specific categories. Using `shouldBeCrawled` method defined in the source class you can define these conditions.
+
+```php
+public function shouldBeCrawled(Crawler $node): bool
+{
+	// e.g. ignore non-relevant categories
+	return true;
+}
+```
+
 #### Testing the sources
 
 The schema crawler automatically generates tests for each source by default. These are located under `tests\Feature\Crawler\Sources`. Each source test extends the `SchemaCrawler\Testing\WebSourceTest` (for websites) or the `SchemaCrawler\Testing\FeedSourceTest` (for feeds).
