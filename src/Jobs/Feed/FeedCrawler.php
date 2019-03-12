@@ -24,6 +24,34 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
      * @var array
      */
     protected $pathSelectors = [];
+    
+    /**
+     * The url of the previous node
+     *
+     * @var string
+     */
+    protected $previousUrl = '';
+    
+    /**
+     * The OverwriteAttributes of the previous node
+     *
+     * @var string
+     */
+    protected $previousOverwriteAttributes = [];
+    
+    /**
+     * Values of the grouped attributes
+     *
+     * @var array
+     */
+    protected $groupedValues = [];
+    
+    /**
+     * Previous node
+     *
+     * @var string
+     */
+    protected $previousNode;
 
     /**
      * Create a new job instance.
@@ -54,7 +82,9 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
             $stream = $this->getXmlStream($filePath);
 
             while ($node = trim($stream->getNode())) {
+				
                 if (starts_with($node, ('<' . $feed['schemaNode']))) {
+					
                     $this->runDetailCrawler($node, $feed['overwriteAttributes']);
                 }
             }
@@ -88,18 +118,30 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
         }
 
         unlink($filePath . '.gz');
-
         return $filePath;
     }
 
     private function runDetailCrawler($node, $overwriteAttributes = [])
     {
+		
         $nodeCrawler = new Crawler(str_replace(['<![CDATA[', ']]>'], '', $node));
-        $url = $this->source->getUrl($nodeCrawler);
-
-        $this->urls[] = compact('url', 'overwriteAttributes');
-
-        dispatch(new FeedDetailCrawler($url, $overwriteAttributes, $this->source, $node));
+        if(!$this->source->shouldBeCrawled($nodeCrawler))
+			return;
+        $url = trim($this->source->getUrl($nodeCrawler));
+        
+        if( !is_null($this->previousNode) && $this->previousUrl !==  $url )
+        {
+			$this->urls[] = compact('url', 'overwriteAttributes');
+			
+			// run detail crawler for the previous node
+			dispatch(new FeedDetailCrawler($this->previousUrl, $this->previousOverwriteAttributes, 
+				$this->source, $this->previousNode, ($this->groupedValues[$this->previousUrl] ?? [])));
+		}
+		
+		$this->previousOverwriteAttributes = $overwriteAttributes;
+		$this->previousNode = $node;
+		$this->previousUrl = $url;
+		$this->collectGroupedValues($url, $nodeCrawler);
     }
 
     private function getXmlStream(string $filePath)
@@ -108,4 +150,11 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
             'expectGT' => true
         ]);
     }
+    
+    protected function collectGroupedValues($url, crawler $node)
+    {
+		if( !empty( $this->source->getGroupedAttributes() ) )
+			foreach($this->source->getGroupedAttributes() as $attr)
+				$this->groupedValues[$url][$attr][] = $this->source->{'get'.ucfirst($attr)}($node);
+	}
 }

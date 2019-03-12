@@ -37,6 +37,13 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      * @var Crawler
      */
     protected $node = null;
+    
+    /**
+     * Values of the collected GroupedAttributes e.g. sizes
+     *
+     * @var Crawler
+     */
+    protected $groupedValues = [];
 
     /**
      * The number of times the job may be attempted.
@@ -44,6 +51,7 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      * @var int
      */
     public $tries = 1;
+    
 
     /**
      * Create a new job instance.
@@ -54,12 +62,13 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      * @param            $node
      * @internal param array $cssSelectors
      */
-    public function __construct(string $url, array $overwriteAttributes, FeedSource $source, $node)
+    public function __construct(string $url, array $overwriteAttributes, FeedSource $source, $node, $groupedValues)
     {
         parent::__construct($overwriteAttributes, $source);
         $this->pathSelectors = $source->getPathSelectors();
         $this->node = $node;
         $this->url = $url;
+        $this->groupedValues = $groupedValues;
     }
 
     /**
@@ -71,20 +80,33 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
     public function handle()
     {
         $this->rawData = $this->getDataFromNode(new Crawler(str_replace(['<![CDATA[', ']]>'], '', $this->node)));
+		parent::handle();
 
-        parent::handle();
     }
 
     private function getDataFromNode(Crawler $node)
     {
+		
         $data = new RawData($this->url, $this->source->getId());
 
         foreach ($this->pathSelectors as $attribute => $pathSelector) {
             if ($attribute !== 'url') {
-                $data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($node);
+				if( in_array($attribute, $this->source->getGroupedAttributes()))
+				{
+					$data->{$attribute} = $this->groupedValues[$attribute] ?? [];
+				}else{
+					
+					$data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($node);
+				}
             }
         }
 
         return $data;
     }
+    
+    public function getUrl()
+    {
+		return $this->url;
+		
+	}
 }
