@@ -552,7 +552,7 @@ public function shouldBeCrawled(Crawler $node): bool
 
 #### Json
 
-In addition to normal websites and feed, you can also add JSON as sources. Some websites use ajax to get lists of the ites and usually this list has all the neccessary schea inforation. You can do this by adding the `--json` option to the `make:source` command.
+In addition to normal websites and feed, you can also add JSON as sources. Some websites use ajax to get the list of the items and return a json response. This list usually contains all the neccessary schema information. You create a json source by adding the `--json` option to the `make:source` command.
 
 ```bash
 php artisan make:source CoolBooksStore --json
