@@ -550,6 +550,54 @@ public function shouldBeCrawled(Crawler $node): bool
 }
 ```
 
+#### Json
+
+In addition to normal websites and feed, you can also add JSON as sources. Some websites use ajax to get the list of the items and return a json response. This list usually contains all the neccessary schema information. You create a json source by adding the `--json` option to the `make:source` command.
+
+```bash
+php artisan make:source CoolBooksStore --json
+```
+
+The structure of the json source looks very similar to the normal web source, but it contains some additional parameters at the json urls attribute.
+
+`hitsKey` is the key to the array of items that contains information about the schema. All attributes inside this array will be accessible for the path selectors.
+
+##### getJson
+In some cases a website might use a more complicated request to get the list of the items. For instance a post request or paging. In these cases you can define the `getJson` method in the source class. This method has to return an array of items containing the schema information.
+
+```php
+
+Use Zttp\Zttp;
+
+public function getJson($url, $hitsKey): array
+{
+	$hits = [];
+	$hasMore = true;
+	$page = 1;
+	while($hasMore){
+		$json = Zttp::post($url, ['page'=>$page])->json();
+		$hits = array_merge($hits,  data_get($json,$hitsKey);
+		if($json['nextPage'] != $json['currentPage'])
+			$page++;
+		else
+			$hasMore = false;
+	}
+	
+	return $hits;
+}
+```
+
+##### Conditional Crawling 
+If the json is consisted of several product types, it is usefull to be able to filter some specific categories. Using `shouldBeCrawled` method defined in the source class you can define these conditions.
+
+```php
+public function shouldBeCrawled(array $data): bool
+{
+	// e.g. ignore non-relevant categories
+	return true;
+}
+```
+
 #### Testing the sources
 
 The schema crawler automatically generates tests for each source by default. These are located under `tests\Feature\Crawler\Sources`. Each source test extends the `SchemaCrawler\Testing\WebSourceTest` (for websites) or the `SchemaCrawler\Testing\FeedSourceTest` (for feeds).

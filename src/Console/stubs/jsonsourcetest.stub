@@ -1,0 +1,10 @@
+<?php
+
+namespace DummyNamespace;
+
+use SchemaCrawler\Testing\JsonSourceTest;
+
+class DummyClass extends JsonSourceTest
+{
+    use \Tests\CreatesApplication;
+}

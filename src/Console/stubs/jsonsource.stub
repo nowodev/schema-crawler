@@ -1,0 +1,50 @@
+<?php
+
+namespace DummyNamespace;
+
+use Symfony\Component\DomCrawler\Crawler;
+
+class DummyClass extends DummyParentJsonSource
+{
+    /**
+     * The urls of the jsons that contain the schema information.
+     * Options for each url can be defined that will overwrite the attributes of the crawled schemas.
+     *
+     * @var array
+     */
+    protected $jsonUrls = [
+        [
+            'url'                 => '',
+            'hitsKey'          => '',
+            'overwriteAttributes' => [],
+        ]
+    ];
+
+    /**
+     * Options defined here will be accessible in the adapter.
+     *
+     * @var array
+     */
+    protected $adapterOptions = [];
+
+    /**
+     * The path selectors of the attributes of the schema.
+     *
+     * @var array
+     */
+    protected $pathSelectors = [
+        'url' => '',
+        'DummyAttributes'
+    ];
+    
+    /**
+     * Determone if the node should be crawled or not 
+     * @return bool
+     */
+    public function shouldBeCrawled($data): bool
+    {
+		// e.g. ignore non-relevant categories
+        return true;
+    }
+    
+}
