@@ -65,6 +65,11 @@ class SourceGenerateCommand extends Command
             $options['--feed'] = true;
         }
 
+        if ($this->confirm("Does this $sourceModelName have a json?")) {
+            $options['--json'] = true;
+        }
+
+
         $this->call('make:source', $options);
     }
 }
