@@ -13,7 +13,7 @@
     "require": {
         "php": "^7.1",
         "guzzlehttp/guzzle": "~6.0",
-        "milivojsa/laravel-chrome": "^3.0.0",
+        "milivojsa/laravel-chrome": "^3.0.1",
         "prewk/xml-string-streamer": "^0.11.0"
     },
     "require-dev": {
