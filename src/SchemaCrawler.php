@@ -58,8 +58,10 @@ class SchemaCrawler
     protected function dispatchCrawlers()
     {
         foreach ($this->sourceClass::shouldBeCrawled()->get() as $source) {
-            $sourceCrawler = $source->getCrawlerClassName();
-            (new $sourceCrawler($source->id))->run();
+            if($source->hasCrawler()) {
+                $sourceCrawler = $source->getCrawlerClassName();
+                (new $sourceCrawler($source->id))->run();
+            }
         }
     }
 
