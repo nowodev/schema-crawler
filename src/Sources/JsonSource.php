@@ -5,6 +5,10 @@ namespace SchemaCrawler\Sources;
 use SchemaCrawler\Jobs\Json\JsonCrawler;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Class JsonSource
+ * @package SchemaCrawler\Sources
+ */
 abstract class JsonSource extends Source
 {
     /**
@@ -23,6 +27,11 @@ abstract class JsonSource extends Source
     protected $pathSelectors = [];
 
 
+    /**
+     * OverviewCrawler class
+     * @var string
+     */
+    protected $overviewCrawlerClass = JsonCrawler::class;
     /**
      * Get the urls of the pages that contain links to the schemas.
      *
@@ -55,13 +64,11 @@ abstract class JsonSource extends Source
     }
 
     /**
-     * Start the crawling process.
-     *
-     * @return mixed
+     * @return array
      */
-    public function run()
+    protected function getSections(): array
     {
-        dispatch(new JsonCrawler($this));
+       return $this->getJsonUrls();
     }
 
     /**

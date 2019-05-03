@@ -31,6 +31,12 @@ abstract class FeedSource extends Source
     protected $groupedAttributes = [];
 
     /**
+     * OverviewCrawler class
+     * @var string
+     */
+    protected $overviewCrawlerClass = FeedCrawler::class;
+
+    /**
      * Get the urls of the pages that contain links to the schemas.
      *
      * @return array
@@ -71,13 +77,11 @@ abstract class FeedSource extends Source
     }
 
     /**
-     * Start the crawling process.
-     *
-     * @return mixed
+     * @return array
      */
-    public function run()
+    protected function getSections() : array
     {
-        dispatch(new FeedCrawler($this));
+        return $this->getFeedUrls();
     }
 
     /**

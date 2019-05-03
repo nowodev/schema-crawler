@@ -23,6 +23,12 @@ abstract class WebSource extends Source
     protected $cssSelectors = [];
 
     /**
+     * OverviewCrawler class
+     * @var string
+     */
+    protected $overviewCrawlerClass = UrlCrawler::class;
+
+    /**
      * Web source specific crawler settings.      
      *
      * @var array
@@ -74,14 +80,13 @@ abstract class WebSource extends Source
     }
 
     /**
-     * Start the crawling process.
-     *
-     * @return mixed
+     * @return array
      */
-    public function run()
+    protected function getSections() : array
     {
-        dispatch(new UrlCrawler($this));
+        return $this->getSourceUrls();
     }
+
 
     /**
      * Dynamic getters for the defined attributes.

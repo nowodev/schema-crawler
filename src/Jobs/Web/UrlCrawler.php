@@ -36,9 +36,9 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
      *
      * @param WebSource $source
      */
-    public function __construct(WebSource $source)
+    public function __construct(WebSource $source, $sectionIndex = null)
     {
-        parent::__construct($source);
+        parent::__construct($source,$sectionIndex);
         $this->cssSelectors = $source->getCssSelectors()['overview'];
         $this->crawlerSettings = $source->getCrawlerSettings();
     }
@@ -50,7 +50,14 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $urls = $this->source->getCustomSchemaUrls() ?: $this->getUrlsFromSources($this->source->getSourceUrls());
+        $urls = $this->source->getCustomSchemaUrls();
+        if(!empty($urls))
+            return $urls;
+        $sources = $this->source->getSourceUrls();
+        if(!is_null($this->sectionIndex))
+            $sources = [$sources[$this->sectionIndex]];
+
+        $this->getUrlsFromSources($sources);
 
         $urls = Helper::mergeDuplicateUrls($urls);
 

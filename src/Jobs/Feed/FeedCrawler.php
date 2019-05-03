@@ -58,9 +58,9 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
      *
      * @param FeedSource $source
      */
-    public function __construct(FeedSource $source)
+    public function __construct(FeedSource $source, $sectionIndex = null)
     {
-        parent::__construct($source);
+        parent::__construct($source, $sectionIndex);
         $this->pathSelectors = $source->getPathSelectors();
     }
 

@@ -31,9 +31,9 @@ class JsonCrawler extends OverviewCrawler implements ShouldQueue
      *
      * @param JsonSource $source
      */
-    public function __construct(JsonSource $source)
+    public function __construct(JsonSource $source, $sectionIndex = null)
     {
-        parent::__construct($source);
+        parent::__construct($source,$sectionIndex);
         $this->pathSelectors = $source->getPathSelectors();
     }
 
@@ -44,7 +44,11 @@ class JsonCrawler extends OverviewCrawler implements ShouldQueue
      */
     public function handle()
     {
-        foreach ($this->source->getJsonUrls() as $jsonUrl) {
+        $sections = $this->source->getJsonUrls();
+        if(!is_null($this->sectionIndex)){
+            $sections = [$sections[$this->sectionIndex]];
+        }
+        foreach ($sections as $jsonUrl) {
 
            $allData = $this->getJson($jsonUrl['url'], $jsonUrl['hitsKey']);
 

@@ -4,6 +4,10 @@
 namespace SchemaCrawler\Sources;
 
 
+/**
+ * Class Source
+ * @package SchemaCrawler\Sources
+ */
 abstract class Source
 {
     /**
@@ -47,6 +51,19 @@ abstract class Source
      * @var array
      */
     protected $allowedAttributes = [];
+
+
+    /**
+     * Overview crawler class
+     * @var string
+     */
+    protected $overviewCrawlerClass = '';
+
+    /**
+     * Overview jobs to be divived into separate jobs
+     * @var bool
+     */
+    protected $dividedOverviewJobs = false;
 
     /**
      * WebSource constructor.
@@ -113,9 +130,32 @@ abstract class Source
     }
 
     /**
+     * @return bool
+     */
+    protected function dividedOverviewJobs()
+    {
+        return (bool) $this->dividedOverviewJobs;
+    }
+
+    /**
      * Start the crawling process.
      *
      * @return mixed
      */
-    abstract public function run();
+    public function run(){
+
+        if($this->dividedOverviewJobs())
+        {
+            foreach ($this->getSections() as $index=>$section) {
+                dispatch(new $this->overviewCrawlerClass($this, $index));
+           }
+        }else
+            dispatch(new $this->overviewCrawlerClass($this));
+    }
+
+    /**
+     * Get the urls array e.g. $sourceUrls
+     * @return array
+     */
+    abstract protected function getSections() : array;
 }

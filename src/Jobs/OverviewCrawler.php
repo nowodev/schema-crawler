@@ -44,12 +44,18 @@ abstract class OverviewCrawler implements ShouldQueue
     public $tries = 2;
 
     /**
+     * @var null|int
+     */
+    protected $sectionIndex = null;
+
+    /**
      * Create a new job instance.
      * @param Source $source
      */
-    public function __construct(Source $source)
+    public function __construct(Source $source, $sectionIndex = null)
     {
         $this->source = $source;
+        $this->sectionIndex = $sectionIndex;
     }
 
     /**
