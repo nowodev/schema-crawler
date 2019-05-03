@@ -57,7 +57,7 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
         if(!is_null($this->sectionIndex))
             $sources = [$sources[$this->sectionIndex]];
 
-        $this->getUrlsFromSources($sources);
+        $urls = $this->getUrlsFromSources($sources);
 
         $urls = Helper::mergeDuplicateUrls($urls);
 
