@@ -53,6 +53,11 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
         $urls = $this->source->getCustomSchemaUrls();
         if(!empty($urls))
             return $urls;
+        if($this->source->detailsFromOverview()){
+            if(!method_exists($this->source, 'getUrlFromNode')){
+                throw new \Exception('getUrlFromNode method must be defined.');
+            }
+        }
         $sources = $this->source->getSourceUrls();
         if(!is_null($this->sectionIndex))
             $sources = [$sources[$this->sectionIndex]];
@@ -74,7 +79,8 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
     public function runDetailCrawlers(array $urls)
     {
         foreach ($urls as $detailPage) {
-            dispatch(new WebDetailCrawler($detailPage['url'], $detailPage['overwriteAttributes'], $this->source));
+            dispatch(new WebDetailCrawler($detailPage['url'], $detailPage['overwriteAttributes'],
+                $this->source, $detailPage['details']));
         }
     }
 
@@ -124,9 +130,15 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
         $absoluteUrl = $this->source->getSourceUrls()[0]['url'];
 
         $website->filter($this->cssSelectors['detailPageLink'])->each(function (Crawler $link) use ($overwriteAttributes, $absoluteUrl, &$urls) {
-            $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
             $overwriteAttributes = $overwriteAttributes ?: [];
-            $urls[] = compact('url', 'overwriteAttributes');
+            if($this->source->detailsFromOverview()){
+                $url = $this->source->getUrlFromNode($link);
+                $details = $link->html();
+            }else{
+                $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
+                $details = '';
+            }
+            $urls[] = compact('url', 'overwriteAttributes', 'details');
         });
 
         return $urls;

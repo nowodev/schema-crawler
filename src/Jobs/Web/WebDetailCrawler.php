@@ -47,6 +47,14 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
      */
     protected $websiteDOM = null;
 
+
+    /**
+     * The html content of the overview node
+     * If the $detailsFromOverview is set to true
+     * @var string
+     */
+    protected $details = '';
+
     /**
      * The number of times the job may be attempted.
      *
@@ -62,10 +70,11 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
      * @param WebSource $source
      * @internal param array $cssSelectors
      */
-    public function __construct(string $url, array $overwriteAttributes, WebSource $source)
+    public function __construct(string $url, array $overwriteAttributes, WebSource $source, string $details = '')
     {
         parent::__construct($overwriteAttributes, $source);
         $this->url = $url;
+        $this->details = $details;
         $this->cssSelectors = $source->getCssSelectors()['detail'];
         $this->crawlerSettings = $source->getCrawlerSettings();
     }
@@ -88,7 +97,10 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $website = $this->browseToWebsite($this->url);
+        if($this->source->detailsFromOverview())
+            $website = (new Crawler($this->details));
+        else
+            $website = $this->browseToWebsite($this->url);
 
         $this->rawData = $this->getDataFromWebsite($website);
 

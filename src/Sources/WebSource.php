@@ -28,6 +28,13 @@ abstract class WebSource extends Source
      */
     protected $overviewCrawlerClass = UrlCrawler::class;
 
+
+    /**
+     * Dont't crawl the details page and get the info from the overview node
+     * @var bool
+     */
+    protected $detailsFromOverview = false;
+
     /**
      * Web source specific crawler settings.      
      *
@@ -85,6 +92,15 @@ abstract class WebSource extends Source
     protected function getSections() : array
     {
         return $this->getSourceUrls();
+    }
+
+    /**
+     *  Get deatils from the overview node
+     * @return bool
+     */
+    function detailsFromOverview(): bool
+    {
+        return (bool) $this->detailsFromOverview;
     }
 
 
