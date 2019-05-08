@@ -51,19 +51,18 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
     public function handle()
     {
         $urls = $this->source->getCustomSchemaUrls();
-        if(!empty($urls))
-            return $urls;
-        if($this->source->detailsFromOverview()){
-            if(!method_exists($this->source, 'getUrlFromNode')){
-                throw new \Exception('getUrlFromNode method must be defined.');
+        if(empty($urls)) {
+            if ($this->source->detailsFromOverview()) {
+                if (!method_exists($this->source, 'getUrlFromNode')) {
+                    throw new \Exception('getUrlFromNode method must be defined.');
+                }
             }
+            $sources = $this->source->getSourceUrls();
+            if (!is_null($this->sectionIndex))
+                $sources = [$sources[$this->sectionIndex]];
+
+            $urls = $this->getUrlsFromSources($sources);
         }
-        $sources = $this->source->getSourceUrls();
-        if(!is_null($this->sectionIndex))
-            $sources = [$sources[$this->sectionIndex]];
-
-        $urls = $this->getUrlsFromSources($sources);
-
         $urls = Helper::mergeDuplicateUrls($urls);
 
         $this->fireUrlEvent($urls);
