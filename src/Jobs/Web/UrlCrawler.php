@@ -79,7 +79,7 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
     {
         foreach ($urls as $detailPage) {
             dispatch(new WebDetailCrawler($detailPage['url'], $detailPage['overwriteAttributes'],
-                $this->source, $detailPage['details']));
+                $this->source, ($detailPage['details']??'')));
         }
     }
 
