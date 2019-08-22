@@ -42,6 +42,9 @@ class SourceMakeCommand extends GeneratorCommand
         if ($this->option('json')) {
             $this->type = 'JsonSource';
         }
+        if ($this->option('csv')) {
+            $this->type = 'CsvSource';
+        }
 
         parent::handle();
 
@@ -87,7 +90,7 @@ class SourceMakeCommand extends GeneratorCommand
             return "'$e' => ''";
         }, array_keys(Config::get('schema-crawler.attributes_to_crawl')));
 
-        if ($this->type == 'FeedSource' or $this->type == 'JsonSource') {
+        if ($this->type == 'FeedSource' or $this->type == 'JsonSource' or $this->type == 'CsvSource') {
             $class = str_replace('\'DummyAttributes\'', implode(",\n\t\t", $attributes), $class);
         } else {
             $class = str_replace('\'DummyAttributes\'', "\n\t\t\t" . implode(",\n\t\t\t", $attributes) . "\n\t\t", $class);
@@ -115,6 +118,10 @@ class SourceMakeCommand extends GeneratorCommand
             $options['--json'] = true;
         }
 
+        if ($this->type == 'CsvSource') {
+            $options['--csv'] = true;
+        }
+
         $this->call('make:sourcetest', $options);
     }
 
@@ -129,6 +136,7 @@ class SourceMakeCommand extends GeneratorCommand
         return [
             ['feed', '-f', InputOption::VALUE_NONE, 'Create a feed source.'],
             ['json', '-j', InputOption::VALUE_NONE, 'Create a json source.'],
+            ['csv', '-c', InputOption::VALUE_NONE, 'Create a csv source.'],
             ['no-test', '-t', InputOption::VALUE_NONE, 'Do not create a test for the source.'],
         ];
     }
