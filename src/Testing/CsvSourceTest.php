@@ -48,28 +48,9 @@ abstract class CsvSourceTest extends TestCase
     {
         foreach ($this->csvUrls as $sourceCsv) {
             $zipped = array_get($sourceCsv, 'zipped', false);
-            $filePath = storage_path('schema-crawler/temp/testing/') . md5(time()) . ($zipped ? '.gz' : '');
-
-            try {
-                file_put_contents($filePath, file_get_contents($sourceCsv['url']));
-            } catch (\Exception $e) {
-                $filePath = null;
-            }
+            $filePath = $this->download($sourceCsv['url'], $zipped);
 
             $this->assertFileExists($filePath);
-
-            if ($zipped) {
-                $zip = new Process(['gzip', '-dk', $filePath]);
-
-                $zip->run();
-
-                if (!$zip->isSuccessful()) {
-                    throw new ProcessFailedException($zip);
-                }
-
-                $this->assertFileExists($filePath);
-                unlink(substr($filePath, 0, -3));
-            }
 
             unlink($filePath);
         }
@@ -79,23 +60,8 @@ abstract class CsvSourceTest extends TestCase
     public function it_can_get_the_attributes()
     {
         $zipped = array_get($this->csvUrls[0], 'zipped', false);
-        $filePath = storage_path('schema-crawler/temp/testing/') . md5(time()) . ($zipped ? '.gz' : '');
 
-        try {
-            file_put_contents($filePath, file_get_contents($this->csvUrls[0]['url']));
-        } catch (\Exception $e) {
-            $filePath = null;
-        }
-
-        if ($zipped AND !empty($filePath)) {
-            $zip = new Process(['gzip', '-dk', $filePath]);
-
-            $zip->run();
-
-            if (!$zip->isSuccessful()) {
-                throw new ProcessFailedException($zip);
-            }
-        }
+        $filePath = $this->download($this->csvUrls[0]['url'], $zipped);
 
         $csv = Reader::createFromPath($filePath, 'r');
 
@@ -115,7 +81,7 @@ abstract class CsvSourceTest extends TestCase
 
 
         foreach ($csv as $offset => $record) {
-            $detailPageUrl = $this->jsonsource->getUrl($data);
+            $detailPageUrl = $this->csvsource->getUrl($record);
             foreach ($this->allowedAttributes as $attribute => $validation) {
                 if (str_contains($validation, 'required')) {
                     $this->assertNotEmpty(
@@ -127,4 +93,31 @@ abstract class CsvSourceTest extends TestCase
         }
         unlink($filePath);
     }
+
+    private function download(string $url, bool $extract = false)
+    {
+        $filePath = storage_path('schema-crawler/temp/testing') . md5(time()) . '.csv';
+
+        try {
+            file_put_contents($filePath . ($extract ? '.gz' : ''), file_get_contents($url));
+        } catch (\Exception $e) {
+            $filePath = null;
+        }
+
+        if (!$extract OR empty($filePath)) {
+            return $filePath;
+        }
+
+        $zip = new Process(['gzip', '-dk', $filePath . '.gz']);
+
+        $zip->run();
+
+        if (!$zip->isSuccessful()) {
+            return null;
+        }
+
+        unlink($filePath . '.gz');
+        return $filePath;
+    }
+
 }

@@ -2,7 +2,7 @@
 
 namespace SchemaCrawler\Sources;
 
-use SchemaCrawler\Jobs\Web\CsvCrawler;
+use SchemaCrawler\Jobs\Csv\CsvCrawler;
 
 abstract class CsvSource extends Source
 {
@@ -96,6 +96,15 @@ abstract class CsvSource extends Source
     public function run()
     {
         dispatch(new CsvCrawler($this));
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function getSections() : array
+    {
+        return $this->getCsvUrls();
     }
 
     /**

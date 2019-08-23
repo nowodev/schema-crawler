@@ -4,10 +4,10 @@ namespace DummyNamespace;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class DummyClass extends DummyParentFeedSource
+class DummyClass extends DummyParentCsvSource
 {
     /**
-     * The urls of the feeds that contain the schema information.
+     * The urls of the csvs that contain the schema information.
      * Options for each url can be defined that will overwrite the attributes of the crawled schemas.
      *
      * @var array
@@ -43,7 +43,7 @@ class DummyClass extends DummyParentFeedSource
 
     /**
      * Attributes that require multiple nodes to be collected.
-     * e.g. sizes, usually xml feeds have several lines of the same product each with one diffrent size
+     * e.g. sizes, usually csv feeds have several lines of the same product each with one diffrent size
      *
      * @var array
      */
@@ -60,12 +60,13 @@ class DummyClass extends DummyParentFeedSource
     ];
 
     /**
-     * Determone if the node should be crawled or not
+     * Determine if the node should be crawled or not
+     * @param array $node
      * @return bool
      */
     public function shouldBeCrawled(array $node): bool
     {
-		// e.g. ignore non-relevant categories
+        // e.g. ignore non-relevant categories
         return true;
     }
 

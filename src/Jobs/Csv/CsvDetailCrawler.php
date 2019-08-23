@@ -1,6 +1,6 @@
 <?php
 
-namespace SchemaCrawler\Jobs\Web;
+namespace SchemaCrawler\Jobs\Csv;
 
 use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Exceptions\InvalidSchema;
@@ -86,7 +86,7 @@ class CsvDetailCrawler extends DetailCrawler implements ShouldQueue
 
     }
 
-    private function getDataFromNode(array $record)
+    private function getDataFromRecord(array $record)
     {
 
         $data = new RawData($this->url, $this->source->getId());
