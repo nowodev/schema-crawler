@@ -43,6 +43,9 @@ class SourceTestMakeCommand extends GeneratorCommand
         if ($this->option('json')) {
             $this->type = 'JsonSourceTest';
         }
+        if ($this->option('csv')) {
+            $this->type = 'CsvSourceTest';
+        }
 
         parent::handle();
     }
@@ -101,6 +104,7 @@ class SourceTestMakeCommand extends GeneratorCommand
         return [
             ['feed', '-f', InputOption::VALUE_NONE, 'Create a feed source test.'],
             ['json', '-j', InputOption::VALUE_NONE, 'Create a json source test.'],
+            ['csv', '-c', InputOption::VALUE_NONE, 'Create a csv source test.'],
         ];
     }
 }

@@ -73,12 +73,14 @@ sudo chmod -R o+rx /usr/lib/node_modules/puppeteer/.local-chromium
 As this is a private repo, you need to add the repository to your composer.json file.
 
 ```json
+...
 "repositories": [
     {
         "type": "github",
         "url":  "git@github.com:redahead/schema-crawler.git"
     }
 ]
+
 ```
 
 After you added the repo to your composer configuration, you can install the package via the composer by running the following command:
@@ -544,6 +546,26 @@ Feeds are usually consisted of several product types, so it is usefull to be abl
 
 ```php
 public function shouldBeCrawled(Crawler $node): bool
+{
+	// e.g. ignore non-relevant categories
+	return true;
+}
+```
+
+#### Csv
+
+In addition to normal websites and XML feed, you can also add CSV feeds as sources. Create a csv source by adding the `--csv` option to the `make:source` command.
+
+```bash
+php artisan make:source CoolBooksStore --csv
+```
+
+
+##### Conditional Crawling 
+If the json is consisted of several product types, it is usefull to be able to filter some specific categories. Using `shouldBeCrawled` method defined in the source class you can define these conditions.
+
+```php
+public function shouldBeCrawled(array $data): bool
 {
 	// e.g. ignore non-relevant categories
 	return true;

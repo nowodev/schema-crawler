@@ -61,14 +61,13 @@ class SourceGenerateCommand extends Command
             'name' => array_slice(explode("\\", $this->source->getCrawlerClassName()), -1)[0],
         ];
 
-        if ($this->confirm("Does this $sourceModelName have a feed?")) {
+        if ($this->confirm("Does this $sourceModelName have a XML feed?")) {
             $options['--feed'] = true;
-        }
-
-        if ($this->confirm("Does this $sourceModelName have a json?")) {
+        }elseif($this->confirm("Does this $sourceModelName have a json?")) {
             $options['--json'] = true;
+        }elseif ($this->confirm("Does this $sourceModelName have a CSV feed?")) {
+            $options['--csv'] = true;
         }
-
 
         $this->call('make:source', $options);
     }

@@ -1,0 +1,10 @@
+<?php
+
+namespace DummyNamespace;
+
+use SchemaCrawler\Testing\CsvSourceTest;
+
+class DummyClass extends CsvSourceTest
+{
+    use \Tests\CreatesApplication;
+}

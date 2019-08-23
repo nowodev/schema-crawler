@@ -1,0 +1,73 @@
+<?php
+
+namespace DummyNamespace;
+
+use Symfony\Component\DomCrawler\Crawler;
+
+class DummyClass extends DummyParentCsvSource
+{
+    /**
+     * The urls of the csvs that contain the schema information.
+     * Options for each url can be defined that will overwrite the attributes of the crawled schemas.
+     *
+     * @var array
+     */
+    protected $csvUrls = [
+        [
+            'url'                 => '',
+            'zipped'              => true,
+            'overwriteAttributes' => [],
+        ]
+    ];
+
+    /**
+     * Csv character controls options
+     *
+     * @var array
+     */
+    protected $csvOptinos = [
+        'headerOffset'  => 0,
+        'delimiter'     => ',',
+        'enclosure'     => '"',
+        'escape'        => '\\',
+        'outputBOM'     => null,
+        'streamFilter'  => null,
+    ];
+
+    /**
+     * Options defined here will be accessible in the adapter.
+     *
+     * @var array
+     */
+    protected $adapterOptions = [];
+
+    /**
+     * Attributes that require multiple nodes to be collected.
+     * e.g. sizes, usually csv feeds have several lines of the same product each with one diffrent size
+     *
+     * @var array
+     */
+    protected $groupedAttributes = [];
+
+    /**
+     * The path selectors of the attributes of the schema.
+     *
+     * @var array
+     */
+    protected $pathSelectors = [
+        'url' => '',
+        'DummyAttributes'
+    ];
+
+    /**
+     * Determine if the node should be crawled or not
+     * @param array $node
+     * @return bool
+     */
+    public function shouldBeCrawled(array $node): bool
+    {
+        // e.g. ignore non-relevant categories
+        return true;
+    }
+
+}
