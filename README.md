@@ -554,7 +554,7 @@ public function shouldBeCrawled(Crawler $node): bool
 
 #### Csv
 
-In addition to normal websites and feed, you can also add CSV as sources. Some websites use ajax to get the list of the items and return a json response. This list usually contains all the neccessary schema information. You create a json source by adding the `--csv` option to the `make:source` command.
+In addition to normal websites and XML feed, you can also add CSV feeds as sources. Create a csv source by adding the `--csv` option to the `make:source` command.
 
 ```bash
 php artisan make:source CoolBooksStore --csv
