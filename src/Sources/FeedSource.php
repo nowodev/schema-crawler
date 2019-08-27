@@ -21,9 +21,9 @@ abstract class FeedSource extends Source
      * @var array
      */
     protected $pathSelectors = [];
-    
+
     /**
-     * Attributes that require multiple nodes to be collected. 
+     * Attributes that require multiple nodes to be collected.
      * e.g. sizes, usually xml feeds have several lines of the same product each with one diffrent size
      *
      * @var array
@@ -55,7 +55,7 @@ abstract class FeedSource extends Source
     {
         return $this->pathSelectors;
     }
-    
+
     /**
      * Get grouped attibutes.
      *
@@ -65,9 +65,9 @@ abstract class FeedSource extends Source
     {
         return $this->groupedAttributes;
     }
-    
+
     /**
-     * Determone if the node should be crawled or not 
+     * Determone if the node should be crawled or not
      * @return bool
      */
     public function shouldBeCrawled(Crawler $node): bool
@@ -82,6 +82,17 @@ abstract class FeedSource extends Source
     protected function getSections() : array
     {
         return $this->getFeedUrls();
+    }
+
+
+    /**
+     * Alternative method to download the feed (e.g. if it requires authentication)
+     * @param $url
+     * @return bool/string
+     */
+    public function getFeedContent($url)
+    {
+        return false;
     }
 
     /**

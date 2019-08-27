@@ -24,28 +24,28 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
      * @var array
      */
     protected $pathSelectors = [];
-    
+
     /**
      * The url of the previous node
      *
      * @var string
      */
     protected $previousUrl = '';
-    
+
     /**
      * The OverwriteAttributes of the previous node
      *
      * @var string
      */
     protected $previousOverwriteAttributes = [];
-    
+
     /**
      * Values of the grouped attributes
      *
      * @var array
      */
     protected $groupedValues = [];
-    
+
     /**
      * Previous node
      *
@@ -82,9 +82,9 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
             $stream = $this->getXmlStream($filePath);
 
             while ($node = trim($stream->getNode())) {
-				
+
                 if (starts_with($node, ('<' . $feed['schemaNode']))) {
-					
+
                     $this->runDetailCrawler($node, $feed['overwriteAttributes']);
                 }
             }
@@ -100,7 +100,7 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
         $filePath = storage_path('schema-crawler/temp/') . md5(time()) . '.xml';
 
         try {
-            file_put_contents($filePath . ($extract ? '.gz' : ''), file_get_contents($url));
+            file_put_contents($filePath . ($extract ? '.gz' : ''), $this->getFileContent($url));
         } catch (\Exception $e) {
             $filePath = null;
         }
@@ -121,23 +121,34 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
         return $filePath;
     }
 
+    protected function getFileContent($url)
+    {
+        if(method_exists($this->source, 'getFeedContent')){
+            $content =  $this->source->getFeedContent($url);;
+            if(!empty($content))
+                return $content;
+        }
+        return file_get_contents($url);
+    }
+
+
     private function runDetailCrawler($node, $overwriteAttributes = [])
     {
-		
+
         $nodeCrawler = new Crawler(str_replace(['<![CDATA[', ']]>'], '', $node));
         if(!$this->source->shouldBeCrawled($nodeCrawler))
 			return;
         $url = trim($this->source->getUrl($nodeCrawler));
-        
+
         if( !is_null($this->previousNode) && $this->previousUrl !==  $url )
         {
 			$this->urls[] = compact('url', 'overwriteAttributes');
-			
+
 			// run detail crawler for the previous node
-			dispatch(new FeedDetailCrawler($this->previousUrl, $this->previousOverwriteAttributes, 
+			dispatch(new FeedDetailCrawler($this->previousUrl, $this->previousOverwriteAttributes,
 				$this->source, $this->previousNode, ($this->groupedValues[$this->previousUrl] ?? [])));
 		}
-		
+
 		$this->previousOverwriteAttributes = $overwriteAttributes;
 		$this->previousNode = $node;
 		$this->previousUrl = $url;
@@ -150,7 +161,7 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
             'expectGT' => true
         ]);
     }
-    
+
     protected function collectGroupedValues($url, crawler $node)
     {
 		if( !empty( $this->source->getGroupedAttributes() ) )
