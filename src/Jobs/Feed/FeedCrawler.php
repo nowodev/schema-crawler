@@ -5,6 +5,7 @@ namespace SchemaCrawler\Jobs\Web;
 use Prewk\XmlStringStreamer;
 use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\FeedSource;
+use SchemaCrawler\Exceptions\GetFeedContentException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+
 
 class FeedCrawler extends OverviewCrawler implements ShouldQueue
 {
@@ -79,7 +81,7 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
                 continue;
             }
 
-            $stream = $this->getXmlStream($filePath);
+            $stream = $this->getXmlStream($filePath, ($feed['depth'] ?? 2));
 
             while ($node = trim($stream->getNode())) {
 
@@ -101,7 +103,10 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
 
         try {
             file_put_contents($filePath . ($extract ? '.gz' : ''), $this->getFileContent($url));
-        } catch (\Exception $e) {
+        } catch ( GetFeedContentException $e ) {
+            throw $e;
+        }
+        catch (\Exception $e ) {
             $filePath = null;
         }
 
@@ -123,11 +128,16 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
 
     protected function getFileContent($url)
     {
-        if(method_exists($this->source, 'getFeedContent')){
-            $content =  $this->source->getFeedContent($url);;
-            if(!empty($content))
-                return $content;
+        try {
+            if (method_exists($this->source, 'getFeedContent')) {
+                $content = $this->source->getFeedContent($url);;
+                if (!empty($content))
+                    return $content;
+            }
+        }catch (\Exception $e){
+            throw new GetFeedContentException($e->getMessage(),0, $e );
         }
+
         return file_get_contents($url);
     }
 
@@ -155,10 +165,11 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
 		$this->collectGroupedValues($url, $nodeCrawler);
     }
 
-    private function getXmlStream(string $filePath)
+    private function getXmlStream(string $filePath, $depth = 2)
     {
         return XmlStringStreamer::createStringWalkerParser($filePath, [
-            'expectGT' => true
+            'expectGT' => true,
+            'captureDepth'=> $depth
         ]);
     }
 
