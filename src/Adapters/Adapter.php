@@ -136,7 +136,10 @@ abstract class Adapter
     private function addBailToValidationRules()
     {
         foreach ($this->allowedAttributes as $attribute => $validation) {
-            $this->allowedAttributes[$attribute] = 'bail|' . $validation;
+            if(is_array( $this->allowedAttributes[$attribute] ))
+                $this->allowedAttributes[$attribute][] = 'bail';
+            else
+                $this->allowedAttributes[$attribute] = 'bail|' . $validation;
         }
     }
 }
