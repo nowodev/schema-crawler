@@ -132,7 +132,8 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
             $overwriteAttributes = $overwriteAttributes ?: [];
             if($this->source->detailsFromOverview()){
                 $url = $this->source->getUrlFromNode($link);
-                $details = $link->html();
+                $detailsNode = $link->getNode(0);
+                $details = $detailsNode->ownerDocument->saveHTML($detailsNode);
             }else{
                 $url = Helper::generateAbsoluteUrl($link->attr('href'), $absoluteUrl);
                 $details = '';
