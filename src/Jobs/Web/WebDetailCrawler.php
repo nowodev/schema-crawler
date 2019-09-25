@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use SchemaCrawler\Containers\RawData;
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Jobs\DetailCrawler;
@@ -97,12 +98,17 @@ class WebDetailCrawler extends DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        if($this->source->detailsFromOverview())
-            $website = (new Crawler($this->details));
-        else
-            $website = $this->browseToWebsite($this->url);
+        try {
+            if ($this->source->detailsFromOverview())
+                $website = (new Crawler($this->details));
+            else
+                $website = $this->browseToWebsite($this->url);
 
-        $this->rawData = $this->getDataFromWebsite($website);
+            $this->rawData = $this->getDataFromWebsite($website);
+        }catch(\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
+        }
 
         parent::handle();
     }

@@ -3,6 +3,7 @@
 namespace SchemaCrawler\Jobs\Json;
 
 use SchemaCrawler\Containers\RawData;
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Jobs\DetailCrawler;
 use SchemaCrawler\Sources\JsonSource;
@@ -45,7 +46,7 @@ class JsonDetailCrawler extends DetailCrawler implements ShouldQueue
      * @var int
      */
     public $tries = 1;
-    
+
 
     /**
      * Create a new job instance.
@@ -72,14 +73,18 @@ class JsonDetailCrawler extends DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->rawData = $this->getDataFromArray($this->data);
-		parent::handle();
-
+        try {
+            $this->rawData = $this->getDataFromArray($this->data);
+        }catch (\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
+        }
+        parent::handle();
     }
 
     private function getDataFromArray(array $data)
     {
-		
+
         $rawData = new RawData($this->url, $this->source->getId());
 
         foreach ($this->pathSelectors as $attribute => $pathSelector) {
@@ -92,10 +97,10 @@ class JsonDetailCrawler extends DetailCrawler implements ShouldQueue
 
         return $rawData;
     }
-    
+
     public function getUrl()
     {
 		return $this->url;
-		
+
 	}
 }

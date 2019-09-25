@@ -3,6 +3,7 @@
 namespace SchemaCrawler\Jobs\Csv;
 
 use SchemaCrawler\Containers\RawData;
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Jobs\DetailCrawler;
 use SchemaCrawler\Sources\CsvSource;
@@ -81,9 +82,13 @@ class CsvDetailCrawler extends DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->rawData = $this->getDataFromRecord($this->record);
+        try {
+            $this->rawData = $this->getDataFromRecord($this->record);
+        }catch(\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
+        }
         parent::handle();
-
     }
 
     private function getDataFromRecord(array $record)

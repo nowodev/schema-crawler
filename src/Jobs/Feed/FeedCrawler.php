@@ -3,6 +3,7 @@
 namespace SchemaCrawler\Jobs\Web;
 
 use Prewk\XmlStringStreamer;
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\FeedSource;
 use SchemaCrawler\Exceptions\GetFeedContentException;
@@ -73,28 +74,33 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
      */
     public function handle()
     {
-        foreach ($this->source->getFeedUrls() as $feed) {
+        try {
+            foreach ($this->source->getFeedUrls() as $feed) {
 
-            $filePath = $this->download($feed['url'], array_get($feed, 'zipped', false));
+                $filePath = $this->download($feed['url'], array_get($feed, 'zipped', false));
 
-            if (empty($filePath)) {
-                continue;
-            }
-
-            $stream = $this->getXmlStream($filePath, ($feed['depth'] ?? 2));
-
-            while ($node = trim($stream->getNode())) {
-
-                if (starts_with($node, ('<' . $feed['schemaNode']))) {
-
-                    $this->runDetailCrawler($node, $feed['overwriteAttributes']);
+                if (empty($filePath)) {
+                    continue;
                 }
+
+                $stream = $this->getXmlStream($filePath, ($feed['depth'] ?? 2));
+
+                while ($node = trim($stream->getNode())) {
+
+                    if (starts_with($node, ('<' . $feed['schemaNode']))) {
+
+                        $this->runDetailCrawler($node, $feed['overwriteAttributes']);
+                    }
+                }
+
+                unlink($filePath);
             }
 
-            unlink($filePath);
+            $this->fireUrlEvent($this->urls);
+        }catch (\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
         }
-
-        $this->fireUrlEvent($this->urls);
     }
 
     private function download(string $url, bool $extract = false)

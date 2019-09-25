@@ -2,6 +2,7 @@
 
 namespace SchemaCrawler\Jobs\Web;
 
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Helper\Helper;
 use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\WebSource;
@@ -50,24 +51,29 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $urls = $this->source->getCustomSchemaUrls();
-        if(empty($urls)) {
-            if ($this->source->detailsFromOverview()) {
-                if (!method_exists($this->source, 'getUrlFromNode')) {
-                    throw new \Exception('getUrlFromNode method must be defined.');
+        try {
+            $urls = $this->source->getCustomSchemaUrls();
+            if (empty($urls)) {
+                if ($this->source->detailsFromOverview()) {
+                    if (!method_exists($this->source, 'getUrlFromNode')) {
+                        throw new \Exception('getUrlFromNode method must be defined.');
+                    }
                 }
+                $sources = $this->source->getSourceUrls();
+                if (!is_null($this->sectionIndex))
+                    $sources = [$sources[$this->sectionIndex]];
+
+                $urls = $this->getUrlsFromSources($sources);
             }
-            $sources = $this->source->getSourceUrls();
-            if (!is_null($this->sectionIndex))
-                $sources = [$sources[$this->sectionIndex]];
+            $urls = Helper::mergeDuplicateUrls($urls);
 
-            $urls = $this->getUrlsFromSources($sources);
+            $this->fireUrlEvent($urls);
+
+            $this->runDetailCrawlers($urls);
+        }catch(\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
         }
-        $urls = Helper::mergeDuplicateUrls($urls);
-
-        $this->fireUrlEvent($urls);
-
-        $this->runDetailCrawlers($urls);
     }
 
     /**
@@ -119,7 +125,7 @@ class UrlCrawler extends OverviewCrawler implements ShouldQueue
     }
 
     private function browseToWebsite(string $url)
-    {          
+    {
         return Browse::browse($url, $this->crawlerSettings );
     }
 

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use SchemaCrawler\Containers\RawData;
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Sources\Source;
 use SchemaCrawler\Sources\WebSource;
@@ -85,19 +86,25 @@ abstract class DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->rawData->validate();
+        try {
 
-        $adapter = $this->createAdapterFromData($this->rawData);
+            $this->rawData->validate();
 
-        $data = $adapter->validateAndGetData();
+            $adapter = $this->createAdapterFromData($this->rawData);
 
-        $schemaClass = $this->source->getSchemaModelClass();
-        $schema = $this->findExistingSchema($schemaClass, $data);
+            $data = $adapter->validateAndGetData();
 
-        if ($schema == null) {
-            $schemaClass::createFromCrawlerData($data);
-        } else {
-            $schema->updateFromCrawlerData($data);
+            $schemaClass = $this->source->getSchemaModelClass();
+            $schema = $this->findExistingSchema($schemaClass, $data);
+
+            if ($schema == null) {
+                $schemaClass::createFromCrawlerData($data);
+            } else {
+                $schema->updateFromCrawlerData($data);
+            }
+        }catch(\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -120,6 +127,7 @@ abstract class DetailCrawler implements ShouldQueue
                 'failed_at'        => Carbon::now()
             ]);
         }
+
     }
 
     /**
@@ -151,7 +159,7 @@ abstract class DetailCrawler implements ShouldQueue
 
         return $query->first();
     }
-    
+
     /**
      * Get the tags that should be assigned to the job.
      *

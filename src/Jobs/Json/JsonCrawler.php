@@ -3,6 +3,7 @@
 namespace SchemaCrawler\Jobs\Json;
 
 
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\JsonSource;
 use Illuminate\Bus\Queueable;
@@ -44,21 +45,25 @@ class JsonCrawler extends OverviewCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $sections = $this->source->getJsonUrls();
-        if(!is_null($this->sectionIndex)){
-            $sections = [$sections[$this->sectionIndex]];
+        try {
+            $sections = $this->source->getJsonUrls();
+            if (!is_null($this->sectionIndex)) {
+                $sections = [$sections[$this->sectionIndex]];
+            }
+            foreach ($sections as $jsonUrl) {
+
+                $allData = $this->getJson($jsonUrl['url'], $jsonUrl['hitsKey']);
+
+                foreach ($allData as $data) {
+                    $this->runDetailCrawler($data, $jsonUrl['overwriteAttributes']);
+                }
+            }
+
+            $this->fireUrlEvent($this->urls);
+        }catch (\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
         }
-        foreach ($sections as $jsonUrl) {
-
-           $allData = $this->getJson($jsonUrl['url'], $jsonUrl['hitsKey']);
-
-           foreach($allData as $data)
-           {
-               $this->runDetailCrawler($data, $jsonUrl['overwriteAttributes']);
-           }
-        }
-
-        $this->fireUrlEvent($this->urls);
     }
 
     protected function getJson($url, $hitsKey): array
@@ -79,7 +84,7 @@ class JsonCrawler extends OverviewCrawler implements ShouldQueue
         $url = trim($this->source->getUrl($data));
 
         $this->urls[] = compact('url', 'overwriteAttributes');
-        
+
         // run detail crawler for the previous node
         dispatch(new JsonDetailCrawler($url, $overwriteAttributes,
             $this->source, $data));

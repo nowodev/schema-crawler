@@ -68,7 +68,7 @@ abstract class OverviewCrawler implements ShouldQueue
         $sourceModel = $this->source->getSourceModelClass();
         event(new UrlsCrawled($urls, $sourceModel::findOrFail($this->source->getId())));
     }
-    
+
      /**
      * Get the tags that should be assigned to the job.
      *

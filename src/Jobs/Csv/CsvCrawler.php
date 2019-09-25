@@ -4,6 +4,7 @@ namespace SchemaCrawler\Jobs\Csv;
 
 use League\Csv\Reader;
 use League\Csv\Statement;
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Jobs\OverviewCrawler;
 use SchemaCrawler\Sources\CsvSource;
 use Illuminate\Bus\Queueable;
@@ -72,38 +73,43 @@ class CsvCrawler extends OverviewCrawler implements ShouldQueue
      */
     public function handle()
     {
-        foreach ($this->source->getCsvUrls() as $csvFile) {
+        try {
+            foreach ($this->source->getCsvUrls() as $csvFile) {
 
-            $filePath = $this->download($csvFile['url'], array_get($csvFile, 'zipped', false));
+                $filePath = $this->download($csvFile['url'], array_get($csvFile, 'zipped', false));
 
-            if (empty($filePath)) {
-                continue;
-            }
-
-            $csv = Reader::createFromPath($filePath, 'r');
-
-            $csv->setDelimiter($this->source->getOption('delimiter'));
-            $csv->setEnclosure($this->source->getOption('enclosure'));
-            $csv->setEscape($this->source->getOption('escape'));
-
-            if($outputBOM = $this->source->getOption('outputBOM'))
-                $csv->setOutputBOM($outputBOM);
-
-            if($streamFilter = $this->source->getOption('streamFilter'))
-                $csv->addStreamFilter($streamFilter);
-
-            $csv->setHeaderOffset($this->source->getOption('headerOffset') ); //set the CSV header offset
-
-            foreach ($csv as $offset => $record) {
-                if($this->source->shouldBeCrawled($record)){
-                    $this->runDetailCrawler($record, $csvFile['overwriteAttributes']);
+                if (empty($filePath)) {
+                    continue;
                 }
+
+                $csv = Reader::createFromPath($filePath, 'r');
+
+                $csv->setDelimiter($this->source->getOption('delimiter'));
+                $csv->setEnclosure($this->source->getOption('enclosure'));
+                $csv->setEscape($this->source->getOption('escape'));
+
+                if ($outputBOM = $this->source->getOption('outputBOM'))
+                    $csv->setOutputBOM($outputBOM);
+
+                if ($streamFilter = $this->source->getOption('streamFilter'))
+                    $csv->addStreamFilter($streamFilter);
+
+                $csv->setHeaderOffset($this->source->getOption('headerOffset')); //set the CSV header offset
+
+                foreach ($csv as $offset => $record) {
+                    if ($this->source->shouldBeCrawled($record)) {
+                        $this->runDetailCrawler($record, $csvFile['overwriteAttributes']);
+                    }
+                }
+
+                unlink($filePath);
             }
 
-            unlink($filePath);
+            $this->fireUrlEvent($this->urls);
+        }catch(\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
         }
-
-        $this->fireUrlEvent($this->urls);
     }
 
     private function download(string $url, bool $extract = false)

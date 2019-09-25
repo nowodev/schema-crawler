@@ -3,6 +3,7 @@
 namespace SchemaCrawler\Jobs\Web;
 
 use SchemaCrawler\Containers\RawData;
+use SchemaCrawler\Exceptions\CrawlerException;
 use SchemaCrawler\Exceptions\InvalidSchema;
 use SchemaCrawler\Jobs\DetailCrawler;
 use SchemaCrawler\Sources\FeedSource;
@@ -37,7 +38,7 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      * @var Crawler
      */
     protected $node = null;
-    
+
     /**
      * Values of the collected GroupedAttributes e.g. sizes
      *
@@ -51,7 +52,7 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      * @var int
      */
     public $tries = 1;
-    
+
 
     /**
      * Create a new job instance.
@@ -79,14 +80,19 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
      */
     public function handle()
     {
-        $this->rawData = $this->getDataFromNode(new Crawler(str_replace(['<![CDATA[', ']]>'], '', $this->node)));
-		parent::handle();
+        try {
+            $this->rawData = $this->getDataFromNode(new Crawler(str_replace(['<![CDATA[', ']]>'], '', $this->node)));
+        }catch (\Exception $e)
+        {
+            throw new CrawlerException($e->getMessage(), $e->getCode(), $e);
+        }
+        parent::handle();
 
     }
 
     private function getDataFromNode(Crawler $node)
     {
-		
+
         $data = new RawData($this->url, $this->source->getId());
 
         foreach ($this->pathSelectors as $attribute => $pathSelector) {
@@ -95,7 +101,7 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
 				{
 					$data->{$attribute} = $this->groupedValues[$attribute] ?? [];
 				}else{
-					
+
 					$data->{$attribute} = $this->source->{camel_case('get_' . $attribute)}($node);
 				}
             }
@@ -103,10 +109,10 @@ class FeedDetailCrawler extends DetailCrawler implements ShouldQueue
 
         return $data;
     }
-    
+
     public function getUrl()
     {
 		return $this->url;
-		
+
 	}
 }
