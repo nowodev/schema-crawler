@@ -11,13 +11,13 @@ class Simple extends AbstractBrowser
     /**
      * return thr crawled page through proxy
      * @return  Crawler
-     * 
+     *
      */
     public function getDOMCrawler(): Crawler
     {
 		 return $this->request($this->url);
 	}
-	
+
 	protected function request($url)
 	{
         $client = new Client();
@@ -34,17 +34,17 @@ class Simple extends AbstractBrowser
         {
 			 throw new BrowserException('HTTP Response '.$e->getMessage());
 		}
-        
+
         $status_code = $response->getStatusCode();
-       
+
         if ($status_code != 200 && $status_code < 411) {
             throw new BrowserException($status_code, 'Page is not available anymore. HTTP Response ' . $status_code);
         }
         if ($status_code != 200 && $status_code >= 411) {
             throw new BrowserException($status_code, 'Could not fetch page. HTTP Response ' . $status_code );
         }
-        return new Crawler((string) $response->getBody());
+        return new Crawler((string) $response->getBody(), $url );
 	}
 
-    
+
 }
