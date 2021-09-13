@@ -2,7 +2,7 @@
 
 namespace SchemaCrawler\Sources;
 
-use SchemaCrawler\Jobs\Web\FeedCrawler;
+use SchemaCrawler\Jobs\Feed\FeedCrawler;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class FeedSource extends Source
