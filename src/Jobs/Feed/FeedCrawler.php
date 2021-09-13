@@ -1,6 +1,6 @@
 <?php
 
-namespace SchemaCrawler\Jobs\Web;
+namespace SchemaCrawler\Jobs\Feed;
 
 use Prewk\XmlStringStreamer;
 use SchemaCrawler\Exceptions\CrawlerException;
@@ -34,6 +34,13 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
      * @var string
      */
     protected $previousUrl = '';
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 5;
 
     /**
      * The OverwriteAttributes of the previous node
@@ -89,7 +96,9 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
 
                     if (starts_with($node, ('<' . $feed['schemaNode']))) {
 
-                        $this->runDetailCrawler($node, $feed['overwriteAttributes']);
+                        $reserved_link = false;
+                        if( !empty($feed['reserved_link']) ) $reserved_link = true;
+                        $this->runDetailCrawler($node, $feed['overwriteAttributes'], $reserved_link);
                     }
                 }
 
@@ -148,10 +157,14 @@ class FeedCrawler extends OverviewCrawler implements ShouldQueue
     }
 
 
-    private function runDetailCrawler($node, $overwriteAttributes = [])
+    private function runDetailCrawler($node, $overwriteAttributes = [], $reserved_link = false)
     {
 
-        $nodeCrawler = new Crawler(str_replace(['<![CDATA[', ']]>'], '', $node));
+        if ($reserved_link) {
+            $nodeCrawler = new Crawler(str_replace(['<![CDATA[', ']]>', '<link>', '</link>'], ['', '', '<xxlink>', '</xxlink>'], $node));
+        }else {
+            $nodeCrawler = new Crawler(str_replace(['<![CDATA[', ']]>'], '', $node));
+        }
         if(!$this->source->shouldBeCrawled($nodeCrawler))
 			return;
         $url = trim($this->source->getUrl($nodeCrawler));

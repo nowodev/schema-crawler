@@ -1,6 +1,6 @@
 <?php
 
-namespace SchemaCrawler\Jobs\Web;
+namespace SchemaCrawler\Jobs\Feed;
 
 use SchemaCrawler\Containers\RawData;
 use SchemaCrawler\Exceptions\CrawlerException;
